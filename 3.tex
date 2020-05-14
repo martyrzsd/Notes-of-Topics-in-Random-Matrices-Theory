@@ -1,0 +1,346 @@
+\part{Central limit theorem}
+
+Consider the sum $S_n := X_1+\dots+X_n$ of iid random variable $X_1,\dots,X_n \equiv X$ of finite mean $\mu$ and variance $\sigma^2$. Then we can expect $S_n$ has size $n\mu+O(\sqrt{n}\sigma)$. The \textit{normalized sum}
+\begin{equation}
+    Z_n := \frac{S_n - n\mu}{\sqrt{n}\sigma},
+\end{equation}
+
+By Chebyshev's inequality \ref{second moment method} we have 
+\begin{equation}
+    \Pb\{|Z_n|>\lambda\} \leq \lambda^{-2}
+\end{equation}
+
+The $Z_n$ has quadratic decay in tail or exponential if $X$ is sub-Gaussian.
+
+\begin{theorem}
+    [Central limit theorem]\label{central limit theorem}
+    Let $X_1,\dots,X_n \equiv X$ be iid real random variables of finite mean $\mu$ and variance $\sigma^2$ for some $\sigma>0$, and let $Z_n$ be the normalized sum. Then as $n\to \infty$, $Z_n$ converges in distribution to the standard normal distribution $N(0,1)_\R$.
+\end{theorem}
+
+$Z_n$ does not converge in probability or a.s.. Because two very different values $n_1 \ll n_2$, the quantities $Z_{n_1}$ and $Z_{n_2}$ are almost independent of each other.\mn{Let $n_2=2n_1$ shall obtain the claim.}
+
+Central limit theorem gives control on random walks, and can be veiwewd as a "commutative" analogue of various spectral results in random matrix theory. Wigner semicircle law can be viewed as a non-commutative or free version of the central limit theorem.
+
+\section{The Fourier method for CLT}
+
+\subsection{Proof reductions for CLT}
+
+We can normalize $X$ to have 0 mean and unit variance, in which case $Z_n$ simplifies to 
+\begin{equation}
+    Z_n = \frac{X_1+\cdots+X_n}{\sqrt{n}}.
+\end{equation}
+
+And it suffices to prove the central limit theorem for bounded random variables $X$. 
+
+\begin{lemma}
+    [Linearty of convergence]
+    Let $V$ be a finite-dimensional real or complex vector space, $X_n, Y_n$ be sequences of $V$-valued random variables(not necessarily independent), and let $X,Y$ be another pair of $V$-valued random variables. 
+    Let $c_n,d_n$ be scalars converging to $c,d$ respectively.
+    \begin{enumerate}
+        \item If $X_n$ converges in distribution to $X$, and $Y_n$ converges in distribution to $Y$, and at least one of $X,Y$ is deterministic. Then
+        \begin{equation*}
+            c_n X_n +d_nY_n \to^d cX+dY.
+        \end{equation*}
+        \item If $X_n$ converges in probability to $X$, $Y_n$ converges in probability to $Y$,
+        \begin{equation*}
+            c_n X_n+d_nY_n \to^\Pb cX+dY.
+        \end{equation*}
+        \item If $X_n$ converges almost surely to $X$, and $Y_n$ converges almost surely to $Y$,
+        \begin{equation*}
+            c_n X_n+d_nY_n \to^{a.s.} cX+dY.
+        \end{equation*}
+    \end{enumerate}
+\end{lemma}
+
+Now if we have the central limit theorem for bounded random variables. Let $X$ be an normalized unbounded random variable, we apply truncation technique to it.
+
+\newcommand{\truncation}[2]{#1_{\leq #2}}
+
+Let $N=N_n>0$ be a truncation parameter depending on $n$ to be optimised later. Split $X$ in the usual fashion $X_{\leq N}+X_{>N}$, $S_n = S_{n,\leq N}+S_{n, >N}$.
+
+Let $\mu_{\leq N},\sigma^2_{\leq N}$ be the mean and variace of $X_{\leq N}$. As our assumption,
+
+\begin{equation*}
+    Z_{n,\leq} := \frac{S_{n,\leq N}-n\truncation{\mu}{N}}{\sqrt{n}\truncation{\sigma}{N}}
+\end{equation*}
+
+converges in distribution to $N(0,1)_\R$. 
+
+\begin{lemma}
+    [Diagonalization principle]
+    $\forall x^i \in \R^\infty,i=1.2,\dots$ if $|x^j_j| \leq C$ then there exist a subsequence $x^{i_k}$ s.t. $\lim_{k\to \infty} x^{i_{k}}_j =x_j$.
+\end{lemma}
+
+Then there exist a sequence going (slowly) to infinity with $n$, such that $Z_{n,\leq N_n}$ still converges in distribution to $N(0,1)_\R$. 
+
+For such a sequence, we see from Lebesgue dominated convergence \ref{dominate convergence theorem} that $\truncation{\sigma}{N_n}$ converges to $\sigma=1$. So 
+\begin{equation*}
+    \frac{S_{n,\leq N_n}-n\truncation{\mu}{N_n}}{\sqrt{n}} \to^d N(0,1)_{\R}.
+\end{equation*}
+
+Meanwhile from Lebesgue dominated convergence theorem \ref{dominate convergence theorem}, $\truncation{\sigma}{N_n}\to 0$. And since 
+
+\begin{equation*}
+    \Pb\{|Z_n|>\lambda\} \leq \lambda^{-2}
+\end{equation*}
+
+By replacing $\lambda$ to $N_n$, we see that
+\begin{equation*}
+    \frac{S_{n,> N_n}-n\mu_{>N_n}}{\sqrt{n}} \to^d 0.
+\end{equation*}
+
+And from the linearity of expectation we have $\mu_{\leq N_n}+\mu_{>N_n} =\mu =0$. Summing up, by the linearity of convergence, we obtain the claim. 
+
+
+\subsection{Proof With Fourier method}
+
+\begin{definition}
+    [characteristic function]
+    Given any real random variable $X$, we introduce the characteristic function $F_X : \R \to \mathbb C$, defined by 
+    \begin{equation}\label{characteristic function}
+        F_X(t) := \E e^{itX}
+    \end{equation}
+    Equivalently, $F_X$ is the Fourier transform of the probability measure $\mu_X$.
+    
+    More generally, for a random variable $X$ taking values in a real vector space $\R^d$, we define the characteristic function $F_X :\R^d \to \mathbb C$ by 
+    \begin{equation}
+        F_X(t) := \E e^{it\cdot X}
+    \end{equation}
+    Where $\cdot$ denotes the Euclidean inner product on $\R^d$.
+
+    One can define the characteristic function on complex vector space $\mathbb C^d$ by using the complex inner product
+    \begin{equation*}
+        (z_1,\dots,z_d)\cdot(w_1,\dots,w_d) := \mathrm{Re} (z_1\bar w_1+\cdots +z_d \bar w_d).
+    \end{equation*}
+\end{definition}
+
+The characteristic function is bounded in magnitude by 1 and equals 1 at the origin. By the Lebesgue dominate convergence theorem, $F_X$ is continuous in $t$. And it's uniformly continuous.
+
+\begin{lemma}
+    [Riemann-Lebesgue lemma]
+    If $X$ is an absolute continuous random variable taking values in $\R^d$ or $\mathbb C^d$, then $F_X(t)\to 0$ as $t\to \infty$.
+\end{lemma}
+
+The term absolute continuous cannot be dropped by thinking about Bernoulli random  variable has characteristic function $\cos(x)$. To prove it, taking the real and imginary part and then apply the Riemann Lebesgue lemma\mn{$\lim_{\lambda\to \infty}\int_a^b \sin (\lambda x) f(x)=0$, if $f$ is integratable and absolute integratable.}. 
+
+\begin{theorem}
+    [Taylor expansion of characteristic function]\label{taylor expansion of characteristic function}
+    Let $X$ be a real random variable with finite $k^{th}$ moment for some $k\geq 1$. $F_X$ is $k$ times continuously differentiable, and one has the partial Taylor expansion
+    \begin{equation*}
+        F_X(t) = \sum_{j=0}^k \frac{(it)^j}{j!} \E X^j +o(|t|^k)
+    \end{equation*}
+    where $o(|t|^k)$ is a quantity goes to zero as $t\to \infty$, times $|t|^k$. In particular we have 
+    \begin{equation*}
+        \frac{\rmd^j}{\rmd t^j} F_X(t) = i^j \E X^j
+    \end{equation*}
+    for all $\leq j\leq k$.
+\end{theorem}
+
+When $X$ is sub-Gaussian, we have 
+\begin{equation}
+    F_X = \sum_{k=0}^\infty \frac{(it)^k}{k!} \E X^k
+\end{equation}
+converges locally uniformly in $t$. 
+
+\begin{theorem}
+    [Levy continuity theorem]\label{levy continuity theorem}
+    Let $V$ be a finite dimensional real or complex vector space, and let $X_n$ be a sequence of $V$-valued random variables, let $X$ be an additional $V$-valued random variable. 
+    Then the following statements are equivalent:
+    \begin{enumerate}
+        \item $F_X$ converges pointwise to $F_X$.
+        \item $X_n$ converges in distribution to $X$.
+    \end{enumerate}
+\end{theorem}
+
+This tell us the characteristic function depends only on the distribution and determin distribution somehow. 
+
+Distribution theory reinterprets functions as linear functionals acting on a space of test functions. 
+Standard functions act by integration against a test function, but many other linear functionals do not arise in this way, and these are the "generalized functions". 
+There are different possible choices for the space of test functions, leading to different spaces of distributions. 
+The basic space of test function consists of smooth functions with compact support, leading to standard distributions. 
+Use of the space of smooth, rapidly (faster than any polynomial increases) decreasing test functions (these functions are called Schwartz functions) gives instead the tempered distributions, which are important because they have a well-defined distributional Fourier transform.
+
+\begin{definition}
+    [Schwartz function]
+    Let $\N_0$ be the set of non-negative integers, and for any $n\in \N_0$, we denote $\N_0^n := \N_0\times \cdots \times \N_0$ to be the n-fold Cartesian product. 
+    The Schwartz space or the space of rapidly decreasing functions on $\R^n$ is the function space 
+    \begin{equation*}
+        \mathbf{S\left({\mathbb {R}}^{n},{\mathbb {C}}\right):=\left\{f\in C^{\infty }({\mathbb {R}}^{n},{\mathbb {C}})|\,\,\forall \alpha ,\beta \in \mathbb {N} _{0}^{n},\quad \|f\|_{\alpha ,\beta }<\infty \right\},}
+    \end{equation*}
+    where $C^{\infty }({\mathbb {R}}^{n},{\mathbb {C}})$ is the set of smooth functions from $\R^n$ into $\mathbb C$, and 
+    \begin{equation*}
+        \displaystyle \|f\|_{\alpha ,\beta }:=\sup _{x\in {\mathbb {R}}^{n}}\left|x^{\alpha }(D^{\beta }f)(x)\right|.
+    \end{equation*}
+    Here we use multi-index.
+\end{definition}
+
+In human langrage, a Schwartz function is a function such that any order of it derivitive exist on $\R$ and goes to zero as $x\to \pm \infty$ faster than any inverse power of $x$. 
+In particular $\mathbf S(\R^n)$ is a subspace of the function space $C^\infty(\R^n)$.
+
+
+\begin{proposition}
+    [Levy's continuity theorem,full version]    
+    Let $V$ be a finite dimensional real or complex vector space, and let $X_n$ be a sequence of $V$-valued random variables, let $X$ be an additional $V$-valued random variable. 
+    Suppose that $F_{X_n}$ converges pointwise to a limit $F$. The following are equivalent,
+    \begin{enumerate}
+        \item $F$ is continuous at 0.
+        \item $X_n$ is a tight sequence.
+        \item $F$ is the characteristic function of a $V$-valued random variable $X$.
+        \item $X_n$ converge in distribution to some $V$-valued random variable $X$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{proposition}
+    [Esseen concentration inequality]\label{Esseen concentration inequality}
+    Let $X$ be a random variable taking values in $\R^d$. Then for any $r>0,\epsilon>0$, show that 
+    \begin{equation}
+        \sup_{x_0 \in \R^d} \Pb\{|X-x_0| \leq r \} \leq C_{d,\epsilon} r^d \int_{t\in \R^d:|t|\leq \epsilon/r} |F_X(t)| \rmd t
+    \end{equation}
+    for some constant $C_{d,\epsilon}$ depending only on $d$ and $\epsilon$. The left-hand side is known as the small ball probability of $X$ at radius r.
+\end{proposition}
+
+In Fourier analysis, we learn that the Fourier transform is particular well-suited tool for studying convolutions. The probability theory analogue of this fact is that characteristic functions are a particularly well-suited tool for studying sums of independent random variables.
+
+\begin{proposition}
+    [Fourier identities]
+    Let $V$ be a finite-dimensional real or complex vector space, and let $X,Y$ be independent random variables taking values in $V$. Then
+    \begin{equation}\label{Fourier identities}
+        F_{X+Y}(t) = F_X(t)F_Y(t)
+    \end{equation}
+    for all $t\in V$. Also, for any scalar $c$, one has 
+    \begin{equation*}
+        F_{cX}(t) = F_X (\bar ct)
+    \end{equation*}
+    and more generally, for any linear transformation $T: V\to V$, one has 
+    \begin{equation*}
+        F_{TX}(t)=F_X(T^*t)
+    \end{equation*}
+\end{proposition}
+
+The proof is based on the expansion. So it requires commutative assumption on $X$.
+
+In particular in the normalized senerior, we have simple relationship
+
+\begin{equation*}
+    F_{Z_n}(t) = F_X(t/\sqrt{n})^n
+\end{equation*}
+
+that discribes the characteristic function of $Z_n$ in terms of that of $X$.
+
+\begin{proof}
+    Proof of central limit theorem. \ref{central limit theorem}
+
+    We may normalise $X$ to have mean zero and variance 1. By \ref{taylor expansion of characteristic function}, we have 
+    \begin{equation*}
+        F_X(t) =1-t^2/2 +o(|t|^2)
+    \end{equation*}
+    for sufficiently small $t$, or equivalently
+    \begin{equation*}
+        F_X (t) =\exp(-t^2/2+o(|t|^2))
+    \end{equation*}
+    for sufficiently small $t$.
+
+    Applying 
+    \begin{equation*}
+        F_{Z_n}(t) = F_X(t/\sqrt{n})^n
+    \end{equation*}
+    we conclude 
+    \begin{equation*}
+        F_{Z_n}(t) \to \exp(t^2/2)
+    \end{equation*}
+    as $n\to \infty$ for any fixed $t$. And this is the characteristic function for the normal distribution $N(0,1)_\R$. 
+    The claim follows from the Levy continuity theorem.
+\end{proof}
+
+\begin{theorem}
+    [Vector-valued central limit theorem]\label{Vector-valued central limit theorem}
+    Let $\overrightarrow{X} = (X_1,\dots,X_d)  $ be a random variable taking values in $\R^d$ with finite second moment. 
+    Define the covariance matrix $\Sigma(\overrightarrow{X})$ to be the $d\times d$ matrix $\Sigma$ whose $ij^{th}$ entry is the covariance $\E (X_i-\E X_i)(X_j-\E X_j)$.
+    The following is true
+    \begin{enumerate}
+        \item Covariance matrix is positive semi-definite real symmetric.
+        \item $\overrightarrow{S_n} := \overrightarrow{X_1}+\dots+\overrightarrow{X_n}$ is the sum of n iid copies of $\overrightarrow{X}$, $\frac{\overrightarrow{S_n}-n\mu}{\sqrt{n}}$ converges in distribution to $N(0,\Sigma(X))_{\R^d}$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+    [Lindeberg central limit theorem]\label{lindeberg central limit theorem}
+    Let $X_1,X_2,\dots$ be a sequence of independent (not necessarily identiclly ditributed) real random variables, normalized to have mean zero and variance one. 
+    Assume the \textit{strong Lindeberg condition} 
+    \begin{equation*}
+        \lim_{N\to \infty} \limsup_{n\to \infty} \frac{1}{n}\sum_{j=1}^n \E |X_{j,>N}|^2 =0
+    \end{equation*}
+    where $X_{j,>N} := X_j \mathbf I(|X_j|>N)$ is the truncation of $X_j$ to large values. Then we have the normalized sum converges to $N(0,1)_\R$. 
+\end{theorem}
+
+
+A more sophiscated version of the Fourier-analytic method gives a more quantitave form of the central limit theorem, the \textit{Berry-Esseen theorem}.
+\begin{theorem}
+    [Berry-Esseen theorem]
+    Let $X$ have mean zero and unit variance and finite third moment. Let $Z_n := (X_1+\cdots+X_n)/\sqrt{n}$, where $X_1,\dots,X_n$ are iid copies of $X$. Then we have 
+    \begin{equation}\label{berry esseen theorem}
+        \Pb(Z_n < a ) =\Pb (G< a) +O(\frac{1}{\sqrt{n}}(\E |X|^3))
+    \end{equation}
+    uniformly for all $a\in \R$, where $G \equiv N(0,1)_\R $, and the implied constant is absolute.
+\end{theorem}
+
+\section{The moment method for CLT}
+
+The Fourier proof relies heavily on the Fourier-analytic identities \ref{Fourier identities}. It uses the identity $e^{A+B} = e^Ae^B$ and on the independent situation $\E(e^Ae^B)=\E e^A\E e^B$. 
+When we turn to random matrix theory, we will often lose some of these properties, which makes it hard to apply Fourier analytic method. 
+
+The moment method is equivalent to the Fourier method in principle, but in practice it looks somewhat different. And it is often more apparant how to modify them to non-independent or non-commutative settings. 
+
+First we need an analogue of Levy's continuity theorem. 
+Here we encounter a technical issue, whereas the Fourier phase $x\mapsto e^{itx}$ were bounded, the moment function $x\mapsto x^k$ become unbounded at infinity. 
+
+One can deal with this issue as long as one has sufficient decay:
+
+\begin{theorem}
+    [Carleman continuity theorem]\label{carlman continuity theorem}
+    Let $X_n$ be a sequence of uniformly sub-Gaussian real random variable, and let $X_4$ be another sub-Gaussian random variable. Then the following statements are equivalent:
+    \begin{enumerate}
+        \item For every $k=0,1,\dots$, $\E X_n^k$ converges pointwise to $\E X^k$.
+        \item $X_n$ converges in distribution to $X$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    From 2. to 1..:
+
+    Let $N>0$ be a truncation parameter, let $\phi :\R \to \R$ be a smooth function that equals 1 on $[-1,1]$ and vanish outside of $[-2,2]$.\mn{For requirements of boundedness. Because the moment function is not bounded, we need this to exploit sub-Gaussian properties.} Then convergence in distribution implies that
+    \begin{equation*}
+        \E X_n^k \phi (X_n/N) \to^d \E X^k\phi(X/N).
+    \end{equation*}
+    On the other hand, from the uniform sub-Gaussian hypothesis, one can make $\E X_n^k(1-\phi(X_n/N))$ and $\E X^k(1-\phi(X/N))$ arbitrarily small for fixed $k$ by making $N$ large enough. 
+    Summing and letting $N$ go to infinity we obtain the claim.
+
+    From 1. to 2..
+    sub-Gaussian implies $(k+1)^{th}$ moment is bounded by $(Ck)^{k/2}$ for all $k\geq 1$ and some C independent of $k$.\mn{While sub-exponential implies bounded by $(Ck)^k$.} 
+
+    From Taylor's theorem with remainder we conclude
+    \begin{equation*}
+        F_{X_n}(t) = \sum_{j=0}^k \frac{(it)^j}{j!}\E X_n^j +O((Ck)^{-k/2}|t|^{k+1})
+    \end{equation*}
+    uniformly in $t$ and $n$. Substracting the expansion of $X_n$ with $X$ and taking the limit (with the help of 1.), we conclude
+    \begin{equation*}
+        \limsup_{n\to \infty} |F_{X_n}(t)-F_X(t)| = O((Ck)^{-k/2}|t|^{k+1}).
+    \end{equation*}
+    Then letting $k\to \infty$ and keeping $t$ fixed, we have the pointwise convergence of characteristic function. Then apply the Levy's continuity theorem \ref{levy continuity theorem} to obtain the claim.
+\end{proof}
+
+We can see from this theorem, a sub-Gaussian random variable is uniquely determined by its moment. 
+
+If the tail is heavier, this cound fail. Like a smooth function is not determined by its derivatives at one point if that function is not analytic. 
+
+When it turns to the proof of central limit theorem, WLOG we assume $X$ is bounded, notice that then $X$ becomes sub-Gaussian automatically. 
+So it suffices to show that 
+\begin{equation*}
+    \E Z_n^k \to \E G^k
+\end{equation*}
+for all $k=0,1,2,\dots,$ where $G\equiv N(0,1)_\R$  is a standard Gaussian variable.
+
+
+
+
+

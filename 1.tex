@@ -1,0 +1,770 @@
+\part{Preparatory}	
+\section{Asymptotic notation}
+
+\begin{definition} $O, o, \Theta$
+
+    We use $X=O(Y),X\ll Y$ to denote the estimate $|X|\leq CY$ for some $C$ independent of $n$ and all $n\geq C$. 
+If we need C to depend on a parameter $k$, indicate it by subscripts like $X=O_k(Y)$. 
+
+We use $X=o(Y)$ if $|X|\leq c(n)Y$ for some $c$ that goes to zero as $n \to \infty$. 
+
+We write $X\sim Y$ or $X=\Theta(Y)$ if $X\ll Y \ll X$.
+
+\end{definition}
+
+\begin{definition} [High-prob notation]Give an event $E=E_n$, we have five in decreasing order of confidence notation that an event is likely to hold:
+    \begin{enumerate}
+        \item  \textit{Surely}: 
+        An event is equal to sure event $\emptyset$.
+        \item \textit{with full probability}:  it occurs with probability 1.
+        \item \textit{with overwhelming probability}:for every fixed $A>0$, it holds with probability $1-O_A(n^{-A})$.\marginnote{We allow the factor depends on $A$, but it holds for all $A$ not just a specific number. Which basically means the high probability can be derived by just take any $A$.}
+        \item \textit{with high probability}:it holds with probability $1-O(n^{-c})$for some $c>0$ independent of $n$.
+        \item \textit{asymptotically almost surely}: it holds with probability $1-o(1)$. 
+    \end{enumerate}
+\end{definition}
+
+\begin{proposition}[Union bound]
+    Now $E$ is our event that depends on n, we can have a family of events index by $\alpha$, namely $E_\alpha$.
+    \begin{enumerate}
+        \item To keep \textit{surely} after union bound, the family can have any cardinality.
+        \item To keep \textit{almost surely} after union bound, the family of need to be at most countable.
+        \item When $E_\alpha$ holds with \textit{uniformly overwhelming probability} in $\alpha$, the family need to be polynomial cardinality $O(n^{O(1)})$.
+        \item When $E_\alpha$ holds with \textit{uniformly high probability} in $\alpha$, the family need to have cardinality $O(n^{o(1)})$.(In particular polylogarithmic $O(\log^{O(1)}n)$)
+    \end{enumerate}
+
+\end{proposition}
+
+This asymptotic not easy is still not easy to handle when performing more complicated operation and having them everywhere in the estimates. 
+But I guess I have to live with it and try to get used to it.
+
+
+\section{Probability}
+
+\subsection{Basic probability}
+
+\begin{theorem}[Lebesgue's dominate convergence theorem ]\label{dominate convergence theorem}
+    Let $f_n$ be a sequence of complex-valued measurable function on a measure space $(S,\Sigma,\mu)$. 
+    Suppose the sequence pointwise converge to a function f that is donimated by some integrable function $g$ for all numbers $n$ in the index set and all points $x\in S$. \mn{If the measure space is complete, one can relax the dominate to almost dominate.}
+    Then $f$ is integrable and we can switch the order of integral and limit.
+\end{theorem}
+\begin{remark}
+    In probability space, where $\mu(S)<\infty$, the uniform integrability is enough for such kind of switching. Which is know as Vitali's theorem.
+\end{remark}
+
+\begin{theorem}
+    [Jensen's inequality]
+    Let $F:\R \to \R$ be a convex function, let $X$ be a bounded real-valued random variable. Show that $\E F(X) \geq F(\E X)$.
+\end{theorem}
+\begin{proof}[Jensen's]
+    Let $L:\R \to \R$ be a linear function such that $L(\E X) = F(\E X)$. Then $F$ donimates $L$ on $\R$. 
+    With linearty and monotoncity we have $\E F(X) \geq  L(\E X) = F(\E X)$.
+\end{proof}
+
+\begin{definition}[Usually bounded]In decreasing order of confidence,
+    \begin{enumerate}
+        \item \textit{surely bounded} 
+        \item \textit{almost surely bounded}
+        \item \textit{sub-Gaussian} 
+        \item \textit{sub-exponential} if there exist $C,c,a > 0$ such that $\Pb\{|X|\geq \lambda \}\leq C\exp\{-c\lambda^a\}\}$.\mn{This is more general from the one in Vershynin's book's definition.}
+        \item \textit{finite $k^{th}$ moment}
+        \item \textit{absolutely integrable}
+        \item \textit{almost surely finite}
+    \end{enumerate}
+\end{definition}
+
+\begin{remark}[Exponential and Fourier moments with moments]
+    If $X$ is sub-Gaussian(or has sub-exponential tails with exponent $a>1$), then from dominate convergence we have the Taylor expansion
+    \begin{equation}
+        \E e^{tX} = 1+ \sum_{k=1}^\infty \frac{t^k}{k!}\E X^k
+    \end{equation}
+    for any real or complex $t$.
+\end{remark}
+
+Remind from Vershynin's book that the $L^p$ norm is actually bounded by orcliz norm up to a factor depend on the orcliz space of $p\geq1$, i.e.
+\begin{equation}
+    ||X||_{L^p} = O(\sqrt{p}||X||_{\psi_2}), = O(p||X||_{\psi_1})
+\end{equation}
+
+And it seems with a little more effort one can derive the high prob version of the magnitude of $X$ under $L^p$ norm.
+
+\subsection{Moments}
+
+\subsubsection{Zeroth-moment method}
+
+By consider the indicator function of an event, the union bound can be rewrite(in the finitely many case) as follow zeroth-momen method
+\begin{equation}
+    \E |\sum_i c_i X_i|^0 \leq \sum_i |c_i|^0 \E |X_i|^0
+\end{equation}
+for any  scalar random variables $X_i$ and scalars $c_i$.
+
+\begin{lemma}
+    [Borel-Cantelli lemma]\label{Borel Cantelli lemma}
+    Let $E_1,E_2,\dots$ be a sequence of events such that $\sum_{i} \Pb \{E_i\} <\infty$. Show that, at most finitely many of the events $E_i$ occur at once.
+\end{lemma}
+
+\begin{proof}
+    Let $I(E_n)$ denote the indicator function of the event $E_n$. Take expectation of $\sum_{i=1}^n I(E_n) $ and apply markov inequality we have 
+    \begin{equation*}
+        \Pb \{\sum_{n=1}^\infty I(E_n)\geq \lambda \} \leq \frac{1}{\lambda} \sum_{n=1}^\infty \Pb\{E_n\}
+    \end{equation*}
+    Let $\lambda\to \infty$ we obtain the claim.
+\end{proof}
+
+\subsubsection{First-moment method}
+
+The applying of Markov inequality and computation of expectation is called first-moment method I guess.\mn{He did not mentioned this in the book, maybe first moment method is usually refered to something else.}
+
+Fix $X$ has finite $k^{th}$ moment, then from Markov's theorem, the higher moments we control, the faster the tail decay.
+\begin{equation}
+    \Pb \{ |X|\geq \lambda\} \leq C\lambda^{-k}.
+\end{equation}
+
+Noting that $\lambda^k \mathbf 1_{|X|\geq\lambda}$ is donimated by $|X|^k$. And the previous one converges a.s. to zero function when $\lambda\to \infty$. 
+So by dominate convergence theorem, take the expectation and take the limit inside the expectation, one can have a variant
+
+\begin{equation}
+    \lim_{\lambda\to\infty} \lambda^k \Pb(|X|\geq \lambda) = 0.
+\end{equation}
+
+But this result is qualitative since it provide no \textit{rate of convergence} of $\lambda^k \Pb(|X|\geq \lambda)$ to zero. 
+Which means the convergence is not uniform to the ambient $n$ or other parameter. 
+And we often have to strengthen the property of merely having uniformly finite bounded moments to abtain a uniformly quantitative convergence rate with respect to ambient $n$ or other parameters.
+
+But if the $X_\alpha$ are just identically distributed or it's just itself, then this will be just fine.
+
+\begin{lemma}[Magnitude from Moments]
+    Let $X = X_n$ be a scalar random variables depending on a parameter $n$.
+    \begin{enumerate}
+        \item $|X_n|$ has uniformly bounded expectation, for any $\epsilon>0$ independent of $n$, we have $|X_n| = O(n^{\epsilon})$ with high probability.
+        \item If $X_n$ has uniformly bounded $k^{th}$ moment, then for any $A>0$, we have $|X_n|=O(n^{A/k})$ with probability $1-O(n^{-A})$. %\mn{Why this is not overwhelming probability.}
+        \item If $X_n$ has uniform sub-exponential tails, then we have $|X_n|=O(\log^{O(1)}n)$ with overwhelming probability. \mn{We need to control $\Pb\{\forall n |X_n|\geq C \log^{O(1)}n\}$, this is what overwhelming probability means. We want a bound holds for any $n$ so that it becomes independent of $n$.}
+    \end{enumerate}
+\end{lemma}
+
+Is this overwhelming probability we have here same as taking the maximum over several independent random variables? 
+Which will bring us back to the maximum of sub-Gaussian? 
+The maximum of sub-Gaussian is given in expectation form in Vershynin's book, but here it seems one can easily derive a high prob version.
+
+
+
+\subsubsection{Second-moment method}
+
+The second moment method is usually refered to using Chebyshev's inequality with coputation of variance given the second order moment is finite.
+
+\begin{example}
+    Denote the median of $X$ as $\M(X)$. Show that if $X$ has finite second moment, then 
+    \begin{equation}
+        \M(X) = \E (X) +O(\Var(X)^{1/2})
+    \end{equation}
+    Straight forward from Chebyshev's inequality.
+\end{example}
+
+\begin{theorem}
+    [Pairwise independence $\to$ linearity of variance]
+    If $X_1 ,\cdots ,X_k$ are pairwise independent scalar random variables of finite ean and variance, show that 
+    \begin{equation}
+        \Var \left(\sum_{i=1}^k X_i\right)=\sum_{i=1}^k \Var(X_i)
+    \end{equation}
+
+    and more generally, 
+    \begin{equation}
+        \Var \left(\sum_{i=1}^k c_iX_i\right)=\sum_{i=1}^k |c_i|^2\Var(X_i)
+    \end{equation}
+    for any scalars $c_i$
+\end{theorem}
+
+\subsubsection{Exponential-moment method}
+
+If $X_1,\cdots,X_k$ are jointly independent sub-Gaussian variables, then
+\begin{equation}
+    \E \prod_{i=1}^k e^{tX_i} = \prod \E e^{tX_i}
+\end{equation}
+
+for any complex $t$.
+
+\subsection{Conditioning/Freezing}
+
+Let $E,F$ be events in some probability space. Conditioning magnify probability by a factor of at most $1/\Pb(E)$. In particular,
+
+\begin{example}[How conditioning magnify probability]
+    \begin{enumerate}
+        \item If $F$ occurs unconditionally surely or almost surely, it occurs surely or almost surely after conditioning on $E$.
+        \item If $F$ occurs unconditionally with overwhelming probability, it occurs with overwhelming probability conditioning on $E$, 
+        provided that $\Pb (E) \geq cn^{-C}$ for some $c,C>0$ independent of $n$.
+        \item If $F$ occurs unconditionally with high probability, it occurs with high probability conditioning on $E$, 
+        provided that $\Pb (E)\geq cn^{-a}$ for some $c>0$ and sufficiently small $a>0$ independent of $n$.
+        \item If $F$ occurs unconditionally asymptotically almost surely, it occurs asymptotically almost surely conditioning on $E$ also,
+         provided that $\Pb(E)>c$ for some $c>0$ independent of $n$.
+    \end{enumerate}
+\end{example}
+
+We define the conditional probability of an (unconditionally) event $F$ conditioning on $Y$ to be the (unconditionally) random variable that is define to equal $\Pb(F|Y=y)$ whenever $Y=y$.
+ Same for the conditional expectation. Then if $X,Y$ are independent, the equality holds always for any $y$ almost surely which makes the conditional expectation a deterministic quantity.
+ 
+And in the discret cases\mn{Conditioning on events or conditioning on discret variables is identically.}, we have the following identity
+\begin{align}
+    \Pb(F) & = \E (\Pb(E|Y)) \\
+    \E(X) & = \E (\E(X|Y)) 
+\end{align}
+
+For conditioning on continuous random variables\mn{which is analogue of dividing into a potentially uncountable number of cases.},
+One need disintegration.
+
+\begin{definition}
+    [Disintegration]
+    Let $Y$ be a random variable with range $R$. A \textit{disintegration} of the underlying sample space $\omega$ with respect to $Y$
+    is a subset $R'$ of $R$ of full measure in $\mu_Y$, together with assignment of a probability measure $\Pb(|Y=y)$ on the subspace $\Omega_y := \{\omega \in \Omega :Y(\omega)=y \}$ of $\Omega$ for each $y\in R$. The probability measure we are assigning is measurable to $y$ in the sense that the map $y\to\Pb(F|Y=y)$ is measureble for every event $F$, and such that
+    \begin{equation}
+        \Pb(F) = \E \Pb(F|Y)
+    \end{equation}
+    for all such events, where $\Pb(F|Y)$ is the (almost surely defined) random variable to equal $\Pb(F|Y=y)$ whenever $Y=y$.
+\end{definition}
+
+
+\section{Stirling's formula}
+
+In short
+\begin{equation*}
+    n! = (1+o(1))\sqrt{2\pi n }n^n e^{-n}.
+\end{equation*}
+
+\subsection{Bound Using Taylor expansion}
+
+By just Taylor expansion of $e^x, x\geq0$, let $x=n$ we have
+\begin{equation}
+    n^n \leq n! \leq n^n e^{-n}.
+\end{equation}
+So $n!$ is within an exponential factor of $n^n$.
+
+\subsection{Bound using Riemann sum}
+
+Start with the identity
+\begin{equation}
+    \log n! = \sum_{m=1}^n \log m
+\end{equation}
+viewing the right-hand side as a Riemann integral approximation to $\int^n_1 \log \rmd x$. Compare the Upper Riemann sum and Lower Riemann sum, one have
+\begin{equation}
+    \int^n_1 \log x \rmd x \leq \sum_{m=1}^n \log m \leq \log n +\int^n_1 \log x \rmd x
+\end{equation}
+Which leads to another bounded
+\begin{equation}
+    en^n e^{-n} \leq n! \leq en \times n^n e^{-n}
+\end{equation}
+So the factor was not exponential but a factor of $n$.
+
+\subsection{Trapezoid rule}
+
+\begin{lemma}
+    The error of composite trapezoidal rule is 
+    \begin{equation*}
+        \textrm{error} = \int_a^b f(x)\rmd x - \frac{b-a}{N} \left[\frac{f(a)+f(b)}{2} +\sum_{k=1}^{N-1}f \left(a+k\frac{b-a}{N}\right)\right] 
+    \end{equation*}
+    And there exist a number $\xi$ between $a$ and $b$ such that
+    \begin{equation*}
+        error = -\frac{(b-a)^3}{12N^2} f''(\xi)
+    \end{equation*} 
+\end{lemma}
+
+On any interval $[m,m+1]$, $\log x$ has a second derivative of $O(1/m^2)$, which by Taylor expansion\mn{I didn't see why he need Taylor expansion here.} leads to approxiamation
+\begin{equation}
+    \int^{m+1}_m \log x \rmd x = \frac{1}{2} \log m + \frac{1}{2} \log (m+1) +\epsilon_m
+\end{equation}
+for some error $\epsilon_m=O(1/m^2)$. 
+
+The error is absolutely convergent. And by integral test, we have $\sum_{m=1}^n \epsilon_m = C + O(1/n)$, where the constant $C := \sum_{m=1}^\infty \epsilon_m$.
+ Perform this sum, rearrange and take exponent, we obtain
+ \begin{equation}
+     n! = (1+O(1/n))e^{1-C} \sqrt{n} n^n e^{-n}.
+ \end{equation}
+
+ Which indicates $n!$ lies roughly at the geometric means of the previous two bounds.
+
+ \subsection{Laplace method}
+
+ Estimation of exponential integral $\int e^{\phi(x)} \rmd x$ when $\phi$ is large can be done through this principle. 
+
+ First the integeral is donimated by the local maxima of $\phi$. Then, near these maxima, $e^{\phi(x)}$ usually behaves like a rescaled Gaussia. 
+ So one can often understand the asymptotics of such integrals by a change of variables designed to reveal the Gaussian behaviour.
+
+ Start by interpreting the factorial via Gamma function,
+ \begin{equation}
+     n!=\int_{0}^{\infty} t^n e^{-t} \rmd t
+ \end{equation}
+
+ $t^ne^{-n}$ achieves its maximum at $n$, so make the substitution $t=n+s$,
+ \begin{equation}
+    n!=\int_{-n}^{\infty} (n+s)^n e^{-n-s} \rmd s
+\end{equation}
+
+Rearrange and simplify it impies 
+\begin{equation*}
+    n! = n^n e^{-n} \int_{-n}^{\infty} \exp(n\log(1+\frac{s}{n})-s)\rmd s.
+\end{equation*}
+
+By Taylor expansion can heuristically have 
+\begin{equation*}
+    \exp(n\log(1+\frac{s}{n})-s) \approx \exp(-s^2/2n).
+\end{equation*}
+
+To do this, we need toscale $s$ by $\sqrt{n}$ to remove $n$ in the denominator. Then 
+\begin{equation*}
+    n! = \sqrt{n}n^n e^{-n} \int_{-\sqrt{n} }^{\infty } \exp (n\log(1+\frac{x}{\sqrt{n} })-\sqrt{n}x )\rmd x.
+\end{equation*}
+
+And Taylor expansion gives us for fixed $x$, we have the pointwise convergence
+\begin{equation}
+    \exp(n\log(1+\frac{x}{\sqrt{n} })-\sqrt{n}x) \to \exp(-x^2/2)
+\end{equation}
+as $n\to \infty$. And Lebesgue dominate convergence theorem tells us 
+\begin{equation*}
+    \int_{-\sqrt{n} }^{ \infty} \exp(n\log(1+\frac{x}{\sqrt{n} })-\sqrt{n}x)\rmd x \to \infint \exp(-x^2/2)\rmd x
+\end{equation*}
+
+Then we will conclude the \textit{Stirling formula}
+\begin{theorem}
+    [Stirling formula]
+    \begin{equation}
+        n! = (1+o(1))\sqrt{2\pi n} n^n e^{-n}.
+    \end{equation}
+\end{theorem}
+
+\begin{example}
+    [Entropy formula]
+    Let $n$ be large, let $0<\gamma<1$ be fixed, and let $1\leq m\leq n$ be an integer of the form $m=(\gamma+o(1))n$.
+    Show that $\binom{n}{m}=\exp((h(\gamma)+o(1))n)$, where $h$ is the entropy function,
+    \begin{equation*}
+        h(\gamma) := \gamma \log \frac{1}{\gamma} +(1-\gamma) \log \frac{1}{1-\gamma}.
+    \end{equation*}
+\end{example}
+\begin{proof}[Entropy formula]
+    Write binom in factorial form and plug in stirling formula. The exponential part will be just $\exp((h(\gamma)+o(1))n)$ itself. 
+    Luckily the term in the square root and the constant a head will be merged into $o(n)$ term after taking exponential.
+\end{proof}
+\begin{example}
+    [Refined entropy formula]
+    Suppose $m = n/2+k$ for some $k=o(n^{2/3})$. Show that
+    \begin{equation}
+        \binom{n}{m} = (\sqrt{\frac{2}{\pi }} +o(1))\frac{2^n}{\sqrt{n} }\exp(-2k^2/n).
+    \end{equation}
+\end{example}
+
+I was not able to prove this version of entropy formula. 
+
+\begin{remark}[Central limit theorem]    
+    The Gaussian-type behaviour in $k$. This can be viewed as an illustration of the central limit theorem.
+    When summing iid Berboulli variables. Indeed,
+    \begin{equation*}
+        \Pb(X_1+\cdots+X_n=n/2+k)=(\sqrt{\frac{2}{\pi }} +o(1))\frac{1}{\sqrt{n} }\exp(-2k^2/n).
+    \end{equation*}
+    When $k=o(n^{2/3})$. Which suggests the sum of $X_i$, $S_n$, is distributed roughly like Gaussian $N(n/2,n/4)$
+\end{remark}
+    
+\section{Eigenvalues and sums of hermitian matrices}
+
+\subsection{Spectral Theorem}
+
+For Hermitian $n\times n$ matrix $A,B$\mn{Ajoint linear operator in finite vector space}. 
+A basic question is to ask the extent to which the eigenvalues $\lambda_1(A),\dots,\lambda_n(A)$ and $\lambda_1(B),\dots,\lambda_n(B)$ of two Hermitian matrices $A,B$ constrain the eigenvalues $\lambda_1(A+B),\dots,\lambda(A+B)$ of the sum. 
+And in typical application to random matrices, one of the matrices (say, $B$) is "small" in some sense, so that $A+B$ is a perturbation of $A$.
+
+The complete answer to this problem is in a survey(see the book). But in random matrices, we don't need the above theory but rather a simple aspect of it, which generates several \textit{eigenvalue inequality}.
+
+\begin{proposition}
+    [Weyl inequality]\label{Weyl inequality}
+    \begin{equation}
+        \lambda_{i+j-1}(A+B)\leq \lambda_i(A)+\lambda_j(B). 
+    \end{equation}
+    valid whenever $i,j\geq 1$ and $i+j-1\leq n$.
+\end{proposition}
+
+\begin{proposition}
+    [Ky Fan inequality]\label{Ky Fan inequality}
+    \begin{equation}
+        \lambda_1(A+B)+\cdots+\lambda_k(A+B)\leq \lambda_1(A)+\cdots+\lambda_k(A)+\lambda_1(B)+\cdots+\lambda_k(B)
+    \end{equation}
+\end{proposition}
+
+One consequence of these inequalities is that the spectrum of a Hermitian matrix is \textit{stable} with respect to small perturbations.\sn{In the sense that the Weyl's gives an upper bound of the deviation after perturbations.}
+
+However the eigenvalues of non-Hermitian matrices can be far more unstable if \textit{pseudospectrum} is present.\sn{This reminds me of the stable dimension v.s. algebric dimension.}
+
+\begin{theorem}
+    [Spectral theorem]
+    Let $V$ be a finite-dimensional complex Hilbert space of some dimension $n$, and let $T:V\to V$ be a self-adjoint operator. Then there exist an orthonormal basis $v_1,\cdots ,v_n \in V$ of $V$ and eigenvalues $\lambda_1,\dots,\lambda_n$ in $\R$ such that $Tv_i=\lambda_iv_i for all 1\leq i\leq n$.
+\end{theorem}
+
+With spectrum theorem and finding a set of new basis\sn{orthonormal basis is unique up to a complex phase rotation $e^{i\theta_j}$ if there's no multiplicity of eigenvalues. If there is, I believe the uniqueness if up to a real rotation plus a complex rotation.} one can diagonalize matrix $A$ which makes computation of matrix function easier. 
+But when dealing with multiple matrices, it's hard to diagonalize matrices simultaneously, unless all the matrices are commute. 
+However one can still normalize one of the eigenbases to be the standard basis.
+
+\subsection{Minimax formulae}
+
+\begin{theorem}
+    [Courant-Fischer minimax theorem]\label{Courant-Fisher minimax theorem}
+    Let $A$ be an $n\times n$ Hermitian matrix. Then we have 
+    \begin{equation}
+        \lambda_i(A) = \sup_{\dim(V)=i} \inf_{v\in V:|v|=1} v^*Av
+    \end{equation}
+    and
+    \begin{equation}
+        \lambda_i(A) = \inf_{dim(V)=n-i+1} \sup_{v\in V:|v|=1} v^*Av
+    \end{equation}
+    for all $1\leq i\leq n$, where $V$ ranges over all subspaces of $C^n$ with the indicated dimension.
+\end{theorem}
+
+The $i^{th}$ eigenvalue functional is not linear(expect in dimension one) nor convex nor concave. It is the next best thing, minimax expression of linear funcionals.\sn{convex functional is the same thing as a max of linear functionals, a concave functional is the same thing as a min of linear functionals.}
+
+\begin{remark}
+    By homogeneity, one can replace the constrain $|v|=1$ with $v\neq0$ provided that one can replaces the quadratic form $v^*Av$ with the \textit{Rayleigh quotient} $v^*Av/v^*v$.
+\end{remark}
+
+\begin{proof}
+    One only need to prove the first equality and then replace $A$ by $-A$, since the $-\lambda_i(A) = \lambda_{n-i+1}(-A)$.
+
+    When $i=1$. Then by Spectral theorem, we can assume $A$ has the standard eigenbasis$e_1,\dots,e_n$, in which case we have
+    \begin{equation}\label{C-F minimax proof}
+        v^*Av = \sum_{i=1}^m \lambda_i|v_i|^2
+    \end{equation}
+    where $v=(v_1,v_2,\dots,v_n).$. The supremum is taken in the space spanned by the first eigenbases.
+
+    When $i\geq 1$, consider the space spanned by $e_1,\dots,e_i$. Then we have the inequality 
+    \begin{equation*}
+        \lambda_i(A)\leq \sup_{\dim V =i} \inf_{v\in V:|v|=1} v^*Av.
+    \end{equation*}
+    Then what left is to prove the reverse inequality. For every $i$-dimensional subspace $V$ of $\mathbf C^n$, we have to show that $V$ contains a unit vector $v$, such that
+    \begin{equation*}
+        v^*Av\leq \lambda_i(A).
+    \end{equation*}
+    Let $W$ be the space spanned by $e_i,\dots,e_n$. This space has codimension $i-1$, so it must have non-trivial intersection with $V$. If we let $v$ be a unit vector in $V\cap W$, the claim is proved.
+    
+\end{proof}
+
+\begin{definition}
+    [Partial Trace]
+    Given an $n\times n$ Hermitian matrix $A$ and an $m$-dimensional subspace $V$ of $\mathbb C^n$, we define the partial trace $\mathrm{tr}(A\downharpoonright_V)$ be the expression
+    \begin{equation*}
+        \mathrm{tr}(A\downharpoonright_V):=\sum_{i=1}^m v_i^*Av_i
+    \end{equation*}
+    where $v_1,\dots,v_m$ is any orthonormal basis of $V$.
+\end{definition}
+
+\begin{lemma}
+    [Commute hermitian matrices]
+    Two hermitian matrices are commute if they have the same eigenspace, which means can be diagonalized at the same time.
+\end{lemma}
+
+This expression is independent of the choices of orthonormal basis, since the tranformation between orthonormal basis are just rotation, which means they are Hermitian matrix. 
+Then consider the eigenbases of $A$ with restriction on $V$ and any orthonormal basis chosen will be equal to this expression in eigenbases.
+
+\begin{proposition}
+    [Extremal partial trace]\label{1.3.4}
+    Let $A$ be an $n\times n$ Hermitian matrix. Then for any $1\leq k\leq n$, one has 
+    \begin{equation*}
+        \lambda_1(A)+\cdots+\lambda_k(A)=\sup_{\dim(V)=k} \mathrm{tr}(A\downharpoonright_V)
+    \end{equation*}
+    and
+    \begin{equation*}
+        \lambda_{n-k+1}(A)+\cdots+\lambda_n(A)=\inf_{\dim(V)=k} \mathrm{tr}(A\downharpoonright_V)
+    \end{equation*}
+    As a corollary, we see that $A\to \lambda_1(A)+\cdots+\lambda_k(A)$ is a convex function, and $A\to \lambda_{n-k+1}(A)+\cdots+\lambda_n(A)$ is a concave function. 
+\end{proposition}
+
+Since it's a supremum of a linear functional, it convex by default, vice versa.
+
+\begin{remark}
+    Specialising \ref{1.3.4} to the case when $V$ is a coordinate sub-space(i.e. the span of $k$ of the basis vectors $e_1,\dots,e_n$), we conclude the \textit{Schur-Horn inequality}
+    \begin{equation}\label{schur-horn}
+        \begin{aligned}
+            \lambda_{n-k+1}(A)+\cdots+\lambda_n(A)&\leq a_{{i_1}{i_1}}+a_{{i_k}{i_k}} \\
+            & \leq \lambda_1(A)+\cdots+\lambda_k(A)
+        \end{aligned}
+    \end{equation}
+    for any $1\leq i_1 < \cdots < i_k \leq n$, where $a_{11},a_{22},\dots,a_{nn}$ are the diagonal entries of $A$.
+\end{remark}
+
+I'm poor in Geometry too. From remark 1.3.5 in the book.
+
+\subsection{Eigenvalue inequalities}
+
+The basic idea is to  exploid the linearity relationship
+\begin{equation}\label{linearty relation}
+    v^*(A+B)v = v^*Av+v^*Bv
+\end{equation}
+for any unit vector $v$, and more generally,
+\begin{equation}\label{linearty relation general}
+    \mathrm{tr}(A+B\downharpoonright_V) = \mathrm{tr}(A\downharpoonright_V)+\mathrm{tr}(B\downharpoonright_V)
+\end{equation}
+for any subspace $V$.
+
+\begin{proposition}
+    \begin{equation}
+        \lambda_1(A+B) \leq \lambda_1(A)+\lambda_1(B)
+    \end{equation}
+\end{proposition}
+
+The result of supremum of sum is controlled by the sum of supremum.
+
+To prove Ky Fan inequality \ref{Ky Fan inequality}, one need to observe plug in \ref{1.3.4} to \ref{linearty relation general}. By plugging in \ref{schur-horn} instead, one get the following \textit{Lidskii inequality},
+
+\begin{proposition}
+    [Lidskii inequality]\label{Lidskii inequality}
+    \begin{equation*}
+        \lambda_{i_1} (A+B)+\cdots+\lambda_{i_k}(A+B) \leq \lambda_{i_1}(A)+\cdots+\lambda_{i_k}(A)+\lambda_{1}(B)+\cdots+\lambda_{k}(B)
+    \end{equation*}
+    for any $1\leq i_1 <\cdots<i_k\leq n$.
+\end{proposition}
+
+Using the inequality
+\begin{equation*}
+    |v^*Bv|\leq ||B||_{\rm{op}} =\max(|\lambda_1(B)|,|\lambda_n(B)|)
+\end{equation*}
+for unit vector $v$, with \ref{linearty relation}, one can derive
+
+\begin{proposition}
+    [Eigenvalue stability inequality]\label{Eigenvalue stability inequality}
+    \begin{equation*}
+        |\lambda_i(A+B)-\lambda_i(A)| \leq ||B||_{\mathrm{op}} \marginnote{Hence the spectrum of $A+B$ will be close to that of $A$ if $B$ is small in operator norm.}
+    \end{equation*}
+\end{proposition}
+
+Hence the map $A \mapsto \lambda_i(A)$ is Lipschitz continuous on the space of Hermitian matrices, for fixed $1\leq i\leq n$.
+
+More generally, if one wants to establish Weyl inequality \ref{Weyl inequality}. 
+
+\begin{proof}[Weyl inequality]
+From Courant-Fischer minimax theorem \ref{Courant-Fisher minimax theorem}, it suffice to show that every $i+j-1$ dimensional subspace $V$ contains a unit vector $v$ such that
+\begin{equation*}
+    v^*(A+B)v \leq \lambda_i(A)+\lambda_j(B).
+\end{equation*}
+But one can find a subspace $U$ of codimension $i-1$ such that $v^*Av \leq \lambda_i(A)$ for all unit vectors $v$ in $U$\mn{From the inf sup version.}, and a subspace $W$ of codimension $j-1$ such that $v^*Bv\leq\lambda_j(B)$ for all unit vectors $v$ in $W$.
+
+The intersection $U\cap W$ has codimension at most  $i+j-2$ and so has a non-trivial intersection with $V$. The claim follows 
+\end{proof}
+
+One can establish the dual inequality for Lidskii and Weyl by consider $-A$.
+
+\subsection{p-Schatten norm}
+One can use the Lidskii inequality to establish the more general inequality
+\begin{equation*}
+    \sum_{i=1}^n c_i \lambda_i(A+B) \leq \sum_{i=1}^n c_i \lambda_i(A)+\sum_{i=1}^n c_i^* \lambda_i(B)
+\end{equation*}
+whenever $c_1,\dots,c_n \geq 0$, and $c_1^* \leq \cdots \leq c_n^* \leq 0$ is the decreasing rearrangement of $c_1,\dots,c_n$.
+
+\begin{proof}
+    
+    By writing
+    \begin{equation*}
+        \sum_{i=1}^n c_i \lambda_i(A+B) = \sum_{i=1}^n \int^\infty_0 \mathbf I (c_i \geq \lambda) \lambda_i(A+B) \rmd \lambda =\int^\infty_0 \sum_{i=1}^n  \mathbf I (c_i \geq \lambda) \lambda_i(A+B) \rmd \lambda
+    \end{equation*}
+    
+    Then notice that inside the integral the indicator function is merely 1 or 0, so we can apply Lidskii inequality then obtain the desired bounds.
+    
+\end{proof} 
+Conbined this with Holder's inequality\mn{by using it for $\sum_{i=1}^n c_i^* \lambda_i(B)$.} to conclude the \textit{p-Weilandt-Hoffman inequality}
+
+\begin{proposition}
+    [p-Weilandt-Hoffman inequality]
+    \begin{equation}
+        ||\{\lambda_i(A+B)-\lambda_i(A) \}_{i=1}^n||_{l_n^p} \leq ||B||_{S^p}
+    \end{equation}
+    for any $1\leq p\leq \infty$. where
+    \begin{equation}
+        ||B||_{S^p} := ||\{\lambda_i(B)\}_{i=1}^n||_{l^p_n}
+    \end{equation}
+    is the \textit{p-Schatten norm} of $B$.
+\end{proposition}
+
+For any $1\leq p \leq \infty$ and any Hermitian matrix $A$, one has\mn{By noticing that $||A||_{S^p}=[tr\{(A^*A)^{p/2}\}]^{1/p} $, and find that it automatically includes the left hand side with some other non-negative term.}
+\begin{equation}
+    ||\{a_{ii}\}_{i=1}^n||_{l^p_n} \leq ||A||_{S^p}.
+\end{equation}
+
+\begin{proposition}
+    [Non-commutative Holder inequality]
+    \begin{equation}
+        |\mathrm{tr}(AB) | \leq ||A||_{S^p} ||B||_{S^{p'}}
+    \end{equation}
+    whenever $1\leq p,p'\leq \infty$ with $1/p+1/p' = 1$, and $A,B$ are $n\times n$ Hermitian matrices.
+\end{proposition}
+
+\begin{remark}
+    The most important p-Schatten norm are $\infty$-schatten norm, which is operator norm and the 2-schatten norm, which is Frobenius norm(or Hilbert-Schmidt norm).\mn{1-schatten norm is nuclear norm. }
+\end{remark}
+
+In the case of $p=2$, we have 
+\begin{equation}
+    \sum_{i=1}^n |\lambda_i(A+B)-\lambda_i(A)|^2 \leq ||B||_F^2.
+\end{equation}
+
+\subsection{Eigenvalue deformation}
+
+Repeated eigenvalues are rare.
+
+\begin{proposition}
+    Suppose $n\geq 2$, the space of Hermitian matrices with at least one repeated eigenvalue has codimension-3 in the space of all Hermitian matrices.
+     And the space of real symmetric matrices with at least one repeated eigenvalue has codimension 2 in the space of all symmetric matrices.
+\end{proposition}
+
+Here the dimension is not the dimension of linear space, but rather the numbers needed to specify something.\mn{Maybe it's true, maybe it's not. Hermitian matrices obviously form a linear space, but in the proof we are not working with linear space, because we work with Unitary matrices.}
+
+\begin{proof}\label{eigenvalue deformation}
+    Consider a $n\times n$ Hermitian matrix $H$, then $H=U\Lambda U^*$, where $U\in U(n)$, and $\Lambda$ is diagonal real matrix. Which will take us $n^2+r$ parameters to describe it, $n^2$ for $U$, $r$ for $\Lambda$. 
+    But then we find it might not take as that many parameters, because when we describe it with that much parameters, the representation is not unique, in other words, $\exists W\in U(n)$ such that $H=W\Lambda W^*$. 
+    
+    We always need $r$ parameter to describe $\Lambda$. But for $U$, it suffices with less parameters. So we ask how many parameters in $n^2$ are redundant. 
+    
+    By thinking starting from $U$, how many parameters we need to reach all the other $W$ that represents a same $H$ as $U$ does. 
+    And the answer is that we can write $W=UV$, where $V\in U(n)$ commutes with $\Lambda$. Denote the numbers of parameters needed for describe $V$ as $v$.
+    This implies there are $v $ numbers of parameters redundant in our representation for $H$. 
+
+    So totally we need $n^2+r-v$ parameters for $H$.\textit{(at least we can expect or it make sense.)}
+
+    In the case when $H$ has at least one repeated eigenvalues, the dimension of this "space"\mn{not linear space anymore.} is determined by the space in which $H$ only has one repeated eigenvalues.
+    
+    We have $f=n-1$. We can denote $\Lambda$ as $\mathrm{diag}(\lambda_1 I_2, \lambda_3,\dots,\lambda_n)$. What left is to see how many numbers it take to describe all $V\in U(n)$ and commutes with $\Lambda$.
+
+    We can denote the multiplicity of each eigenvalue as $g_i$, then $\sum_{i=1}^k g_i = n$. And we need $V$ to commute with a diagonal matrix $\Lambda$. Noticing that $\Lambda$ is formed by scaled identity matrix of size $g_{i}$. So $V$ is a matrix whose diagonal are formed by the block of same size as $\Lambda$, we can expect $\sum_{i=1}^k g_{i}^2$ numbers to describe $V$.
+
+    Then in our case $f=n-1,v=n+2$, so it makes sense.(not proved)
+\end{proof}
+
+\begin{definition}
+    [Simple spectrum]
+    A Hermitian matrix has simple spectrum if it has no repeated eigenvalues.
+\end{definition}
+
+We can see from the codimension of the space of hermitian matrix with simple spectrum and \ref{Eigenvalue stability inequality} that the set of them form a \textit{open dense set} in the space of all Hermitian matrices.\mn{I don't know why.}
+
+Thus simple spectrum is the generic behaviour of such matrices.
+
+The unexpectedly high codimension of the non-simple matrices suggests a repulsion phenomenon:
+because it is unexpectedly rare for eigenvalues to be equal, there must be some "force" that "repels" eigenvalues of Herimitian matrices from getting too close to each other.
+
+We first observe that when $A$ has simple spectrum, the zeroes of characteristic polynomial $\lambda \mapsto \det(A-\lambda I )$ has non-zero derivative at those zeroes(which is called simple). 
+From this and the inverse function theorem, we see that each of the eigenvalue maps $A\mapsto \lambda_i(A)$ are smooth on the region where $A$ has simple spectrum. 
+Because the eigenvectors $\mu_i(A)$ are determined(up to a phase\mn{spectral projection does not have such ambiguity.}) by the equation $(A-\lambda_i(A)I)\mu_i(A)=0$ and $\mu_i(A)^*\mu_i(A)=1$, another application of the inverse function theorem tells us we can locally select the maps $A\mapsto \mu_i(A)$ to also be smooth.
+
+Differentiate the equations 
+\begin{eqnarray}
+    A\mu_i &= \lambda_i \mu_i \\
+    \mu_i^* \mu_i & =1
+\end{eqnarray}
+
+to obtain 
+\begin{eqnarray}
+\dot{A} \mu_i+A \dot{\mu_i} &= \dot{\lambda_i} +\lambda_i \dot{\mu_i} \label{1.71}\\
+\dot{\mu_i^*}\mu_i +\mu_i^* \dot{\mu_i} = 0 \label{1.72}
+\end{eqnarray}
+
+\ref{1.72} simplifies to $\dot{\mu_i^*} \mu_i =0$, which means $\dot{\mu_i}$ is orthogonal to $\mu_i$. Taking the inner product of \ref{1.71} with $\mu_i$, we conclude the \textit{Hadamard first variation formula}:
+
+\begin{proposition}
+    [Hadamard first variatoin formula]
+    \begin{equation}
+        \dot{\lambda_i} = \mu_i^* \dot{A} \mu_i.
+    \end{equation}
+\end{proposition}
+
+If we apply this to $A(t):= A+tB$, we see that whenver $A+tB$ has simple spectrum, 
+\begin{equation*}
+    \frac{\rmd}{\rmd t}\lambda_i(A+tB) =\mu_i(A+tB)^*B\mu_i(A+tB)
+\end{equation*}
+the right-hand side is bounded in magnitude by $||B||_{op}$. So the map $t\mapsto \lambda_i (A+tB)$ is Lipschitz continuous with Lipschitz constant $||B||_{op}$ whenever $A+tB$ has simple spectrum. 
+One result of it is \ref{Eigenvalue stability inequality}.
+
+By differentiate twice on \ref{1.71} and \ref{1.72}, we have the \textit{Hadamard second variation formula}
+\begin{proposition}
+    [Hadamard second variation formula]
+    $$\frac{\rmd ^2}{\rmd t^2} \lambda_k=\mu_k^* \ddot{A} \mu_k + 2\sum{i\neq k} \frac{|\mu_j^* \dot{A} \mu_k|^2 }{\lambda_k-\lambda_j} $$
+    whenever $A$ has simple spectrum and $1\leq k \leq n$.
+\end{proposition}
+
+\subsection{Minors}
+
+\begin{proposition}
+    [Cauchy interlacing law]
+    For any $n\times n$ Hermitian matrix $A_n$ with top left $n-1\times n-1$ minor $A_{n-1}$, then 
+    \begin{equation}\label{Cauchy interlacing law}
+        \lambda_{i+1}(A_n) \leq \lambda_i(A_{n-1}) \leq \lambda_i(A_n)
+    \end{equation}
+    for all $1\leq i < n.$
+
+    The space of $A_n$ for which equality holds in one of inequality \ref{Cauchy interlacing law} has codimension 2 (for Hermitian matrices) or 1 (for real symmetric matrices).
+\end{proposition}
+
+\begin{remark}
+    If one takes successive minors $A_{n-1},A_{n-2},\dots,A_1$ of an $n\times n$ Hermitian matrix $A_n$, and computes their spectra, then \ref{Cauchy interlacing law} shows that this triangulary array of numbers froms a pattern know as \textit{Gelfand-Tsetlin pattern}.
+\end{remark}
+
+\begin{proof}
+    The right side is obvious from Courant-min-max theorem. The left hand side need to argue about the nontrivial intersection as Weyl inequality.
+\end{proof}
+
+\begin{proposition}
+    [Eigenvalue equation]
+    Let $A_n$ be an $n\times n$ Hermitian matrix with top left $n-1\times n-1$minor $A_{n-1}$. Suppose that $\lambda$ is an eigenvalue of $A_n$ distinct from all the eigenvalues of $A_{n-1}$. One have 
+    \begin{equation}\label{Eigenvalue equation}
+        \sum_{j=1}^{n-1} \frac{|\mu_j(A_{n-1})^*X |^2}{\lambda_j(A_{n-1})-\lambda} = a_{nn}-\lambda
+    \end{equation}
+    where $a_{nn}$ is the bottom right entry of $A$, and $X=(a_{nj})_{j=1}^{n-1}\in \mathbb C^{n-1}$ is the right column of $A$.
+\end{proposition}
+
+\begin{proof}
+    Expand the eigenvalue function and notice that since $\lambda$ is distinct from all the eigenvalues of minor $A_{n-1}$, the matrix $A_{n-1}-\lambda I$ is invertible and has eigenvalue $\lambda_i(A_{n-1})-\lambda$ with eigenvectors $\mu_j(A_{n-1})$.
+\end{proof}
+
+The function $\lambda \mapsto \sum_{j=1}^{n-1} \frac{|\mu_j(A_{n-1})^*X |^2}{\lambda_j(A_{n-1})-\lambda}$ is a rational function of $\lambda$ which is increasing away from the eigenvalues of $A_{n-1}$, where it has a pole.\mn{In rare case when the inner product vanishes, it has a removable singularity.}
+By graphing this function one can see that the interlacing formula can be interpreted as a manifestation of the intermediate value theorem.
+
+It also suggests that under typical circumstances, an eigenvalue of $A_n$ can only get close to an eigenvalue $\lambda_j(A_{n-1})$ if the associated inner product $\lambda_j(A_{n-1})^*X$ is small. This is useful to achieve eigenvalue repulsion.
+
+
+\subsection{Singular values}
+
+\begin{theorem}
+    [Singular value decomposition]
+    Let $0\leq p\leq n$, and let $A$ be a linear transformation from n-dimensional complex Hilbert space $U$ to a p-dimensional complex Hilbert space $V$. Then there exist non-negative real numbers
+    \begin{equation*}
+        \sigma_1(A)\geq \cdots \geq \sigma_p(A) \geq 0
+    \end{equation*}
+    and orthonormal set $u_1(A),...u_p(A) \in U$ and $v_1(A),\dots,v_p(A) \in V$ known as singular vectors of $A$, such that
+    \begin{equation*}
+        Au_j=\sigma_jv_j ; \quad A^*v_j = \sigma_ju_j
+    \end{equation*}
+    for all $1\leq j \leq p$, where we abbreviate $u_j=u_j(A)$.
+    $Au=0$ whenever $u$ is orthogonal to all $u_1(A),\dots,u_p(A)$.
+\end{theorem}
+
+By noticing $\sigma_i(A^*):=\sigma_i(A)$, there won't be any problem for us to work with a tall matrix. 
+
+
+
+\begin{remark}
+    The singular value of a matrix $A$ are unique. And if we have $\sigma_1(A) > \cdots > \sigma_p(A)>0$, show that the singular vectors are unique up to rotation by a complex phase.
+    
+    Singular value is invariant under left or right unitary transformation.\mn{$\sigma_i(UAV) = \sigma_I(A)$ whenever A is a unitary $p\times n$ matrix, $U$ is a unitary $p\times p$ matrix, and $V$ is a unitary $n\times n$ matrix. }
+
+    Singular value of square Herimitian matrix are simply the absolute values of its eigenvalues.
+\end{remark}
+
+If $A$ is a $p\times n$ complex matrix for some $1\leq p \leq n$, show that the \textit{augmented matrix}
+
+\begin{equation*}
+    \tilde{A} := \begin{pmatrix}
+        0 & A \\
+        A^* & 0 \\
+    \end{pmatrix}
+\end{equation*}
+
+is a $p+n\times p+n$ Hermitian matrix whose eigenvalues consist of $\pm  \sigma_1(A),\dots,\pm \sigma_p(A)$ together with $n-p$ copies of the eigenvalue zero. The singular vectors of $\title{A}$ is the union of left and right eigenvectors.
+
+\begin{proposition}
+    [Courant-Fischer minimax formula]
+    Let $A$ be a $p\times n$ complex matrix for some $1\leq p \leq n$. 
+    \begin{equation}
+        \sigma_i(A) = \sup_{\dim V=i} \inf_{v\in V;|v|=1} |Av|
+    \end{equation}
+    for all $1\leq i \leq p$.
+\end{proposition}
+
+The analogous inequality about singular value we had before for Hermitian matrix can be deduced from here.

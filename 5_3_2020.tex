@@ -1,0 +1,53 @@
+\section{Problems before 5.3.2020}
+
+% \subsection{Why does optimising in $t$ leaves a form $C\exp (c\lambda^2)$ with two constants.}
+
+% There is a general trick in exponential moment method that we first leave the parameter in the moment generating function to be optimise at the very end of the proof.
+
+% Like in the proof of McDiarmid theorem \textit{(Theorem 2.1.10, Page 69) },
+
+% \begin{theorem}
+%     [McDiarmid's inequality]
+%     Let $X_1,\dots,X_n$ be independent random variables taking values in range $R_1,\dots,R_n$ and let $F: R_1\times \dots \times R_n \to \mathbf C$ be a function with the property that if one freezes all but the $i^{th}$ coordinate of $F(x_1,\dots,x_n)$ for some $1\leq i\leq n$, then F only fluctuates by at most $c_i >0$, thus
+%     \begin{equation*}
+%         |F(x_1,\dots,x_{i-1},x_i,x_{i+1},\dots,x_n) - F(x_1,\dots,x_{i-1},x_i',x_{i+1},\dots,x_n)| \leq c_i
+%     \end{equation*}
+%     for all $x_j \in X_j,x_i'\in X_i$ for all $i\leq j\leq n$. Then for any $\lambda >0$, one has 
+%     \begin{equation*}
+%         \Pb\{|F(X)-\E F(X)|\geq \lambda \sigma \} \leq C \exp \{-c\lambda^2\}
+%     \end{equation*}
+%     for some absolute constants $C,c >0$, where $\sigma^ := \sum_{i=1}^n c_i^2$.
+% \end{theorem}
+
+% In the proof \ref{Proof of Mcdiarmid}, the last step when optimising $t$, without the Big O notation, I first try to work with explicit $C_1$. It holds for all $t$ that
+% \begin{eqnarray*}
+%     \Pb (F(X)-\E F(X)\geq \lambda\sigma) &\leq \exp(C_1t^2 \sigma^2 - t\lambda\sigma)\\
+% \end{eqnarray*}
+% Let $t=\lambda/2C_1\sigma$ to obtain the minimum of the right-hind-side $\exp((-1/2C) \lambda^2)$\sn{assuming the constrain for the existence of MGF is satisfied.} We can see that there are no constant outside (or before) the exponential (the constant $C$ in the theorem). 
+
+% Compare to what's in Vershynin's book, there's no such type of constant since he is using the orcliz norm basically all the time. 
+% And when you bound the orcliz norm with a factor $C_2$, it will shows up inside the exponential after you write the tail probability. Some times there's a constant before exponential because there is some constants inside the exponential, which to me is not the case here.
+
+% I just don't understand where that $C$ comes from? Does it comes from the requirements for the existence of MGF? 
+
+\subsection{Spherical width of the unit ball is 1 or 2?}
+
+In Vershynin's book, \textit{Exercise 7.5.7, Page 175}, says the unit sphere has spherical width 2. 
+
+But I think from his definition for spherical width $w_s(T)$,
+\begin{equation*}
+    w_s(T) = \E \sup_{x\in T} <\theta,x>, \theta \sim \text{Unif}(S^{n-1})
+\end{equation*}
+Under such definition, the spherical width shall be 1 instead of 2 isn't it? Although it's not a huge difference. It will be 2 if he define it to be the magnitude of absolute value $|<\cdot,\cdot>|$ or $\sup_{x\in T-T}$. And all of them are kind of equivalent.
+
+\section{Proof for Talagrand's concentration inequality.}
+
+You are not expected to answer this one because this can be viewed as part of my personal feeling instead of a real question. 
+I should try to fix it on my own before I ask you. 
+So I post it here for a shorter email for you to read and you only need to read this if you are interested in my experience. 
+
+I don't understand what the "combinatorial distance" or "support" means in Dr. Tao's book. Since he said he will rely on this heavily in the later context, I will try to read other literiture especially you recommended to me to figure it out. 
+However I'm able to understand\mn{Maybe I don't.} it using Log-Soboblev inequality, but I didn't orgnize it in this note by the time I write this.
+
+Actually I am doing it and in half way now. I find those literiture, specifily the one by Dr. Logusi, feels much more accessible because it's more detailed in proof, not involves that much asymptotic notation and usually works in $\R$ instead of $\mathbb C$. 
+But I guess I have to get used to those things somehow in the future, especially asymptotic notation. It's hard, but it's getting more interesting, even before I see any new results involves random matrix. This part of contents is like an extended version of Vershynin's book but from a pure analytical perspective.

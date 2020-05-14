@@ -1,0 +1,676 @@
+\part{Concentration of measure}
+
+The basic intuition here is that it is difficult for a large number of independent variables $X_1,\dots,X_n$ to "work together" to simultaneously pull a combination $F(X_1,\dots,X_n)$ too far away from its mean.
+
+We will focus on a specific application which is useful on controlling the behaviour of random n-dimensional vectors with independent components, and in particular on the distance between such random vectors and a given subspace.
+
+\section{Linear combinations, and the moment method}
+
+% \subsection{zeroth-moment method}
+
+% Truncation trick
+
+% \subsection{First moment method}
+
+% \begin{equation*}
+%     \E |S_n| \leq \sum_{i=1}^n \E |X_i|
+% \end{equation*}
+
+\subsection{First and second moment method}
+
+Zero moment method a bound is usually useless
+\begin{equation}\label{zero moment method}
+    \Pb\{S_n\neq 0\} \leq \sum_{i=1}^n \Pb\{X_i \neq 0\}
+\end{equation}
+
+First moment method gives
+\begin{equation}\label{first moment method}
+    \Pb(|S_n|\geq \lambda) \leq \frac{1}{\lambda } \sum_{i=1}^n \E |X_i|.
+\end{equation}
+
+$S_n$ typically has size $S_n=O(\sum_{i=1}^n|X_i| )$. The decay is linear in $\lambda$.
+
+Second moment method suggests that if we have pairwise independence\mn{It suffices to have covariance vanish for all distinct pair}.
+\begin{equation}\label{second moment method}
+    \Pb(|S_n - \E S_n|\geq \lambda) \leq \frac{1}{\lambda^2} \sum_{i=1}^n \Var (X_i)
+\end{equation}
+
+$S_n$ has size $S_n = \E S_n + O((\sum_{i=1}^n \Var(X_i))^{1/2})$. The decay is quadratic in $\lambda$.
+
+The \ref{second moment method} is sharp. We cannot expect any significant concentration in any range narrower than the standard deviation, because this would contradict with the size of Variance of $S_n$. 
+Second the quadratic-type decay in $\lambda$ is sharp given the pairwise independence hypothesis. 
+\begin{example}
+    Suppose that $n=2^m -1$, and that $X_j := (-1)^{a_j\cdot Y}$ where $Y$ is drawn uniformly at random from the cube $\{0,1\}^m$, and $a_1,\dots,a_n$ are an anumeration of the non-zero elements of $\{0,1\}^m$.
+    Each $X_j,1\leq j \leq n$  has mean zero, variance 1, and pairwise independence in $j$: but $S$ is equal to $(n+1)\mathbf I(Y=0-1)$ which is equal to $n$ with probability $1/(n+1)$. And the standard deviation of $S$ is just $\sqrt{n}$.
+    Which mean \ref{second moment method} is sharp up to constants when $\lambda=n$.
+\end{example}
+
+\subsection{Higher moment method}
+
+\begin{remark}
+    In short, control of each individual moment $\E |S_n|^k$ only gives polynomial decay in $\lambda$, the tail prob, by using all the moments simultaneously one can obtain sub-Gaussian decay.
+\end{remark}
+
+For higher moments. Assume $X_i$ are normalised to be mean zero and variance at most 1, and are almost surely bounded in magnitude by some $K:|X_i|\leq K,K\geq 1$. And $X_i$ are real-valued.
+
+Assume there are $k$-wise independence for some positive integer $k$, then we can estimate $k^{th}$ moment of $S_n$
+
+\begin{equation*}
+    \E |S_n|^k = \sum_{1\leq i_1 ,\dots , i_k \leq n} \E X_{i_1}\dots X_{i_k}.
+\end{equation*}
+
+To compute the expectation of right hand side, we need to divide into cases depending on  how various indices are repeated.
+
+If one of the $X_{i_j}$ only appear once, the expectation is zero. So we may assume that each of the $X_{i_j}$ appear at least twice.
+
+There are at most $k/2$ distinct $X_j$ which appear. If it happens exactly, then the expectation has magnitude 1. If $l/2 -r$ terms appear, since the upper bound $K$ is assumed, we see the expectation has magnitude at most $K^{2r}$. This leads to the upper bound
+
+\begin{equation*}
+    \E |S_n|^k = \sum_{r=0}^{k/2} K^{2r} N_r
+\end{equation*}
+
+where $N_r$ is the number of ways one can select integers $i_1,\dots,i_k$ in $\{1,\dots,n \}$ such that each $i_j$ appears at least twice, and such that exactly $k/2-r$ integers appear. And the problem become combinatorial problem of estimating $N_r$.
+
+There are $\binom{n}{k/2-r}\leq n^{k/2-r} / (k/2-r)!$ ways\mn{With more care on this in to improve a explicit constant in the final bounds.} to choose $k/2-r$ integers from $\{1,\dots ,n\}$. Each of the integers $i_j$ has to come from one of these $k/2-r$ integers, leading to the crude bound
+\begin{equation*}
+    N_r \leq \frac{n^{k/2-r}}{(k/2-r)!} (k/2-r)^k
+\end{equation*}
+which after using a crude form of Stirling formula $n!\geq n^n e^{-n}$ gives
+\begin{equation*}
+    N_r \leq (en)^{k/2-r} (k/2)^{k/2+r},
+\end{equation*}
+and so 
+\begin{equation*}
+    \E |S_n|^k \leq (enk/2)^{k/2} \sum_{r=0}^{k/2} (\frac{K^2k}{en})^r.
+\end{equation*}
+
+Then if we make the mild assumption 
+\begin{equation}
+    K^2 \leq n/k
+\end{equation}
+
+then from the geometric series formula we conclude that
+\begin{equation*}
+    \E|S_n|^k \leq 2(enk/2)^{k/2}
+\end{equation*}
+
+which leads to the large deviation inequality
+\begin{equation}\label{higher moment method}
+    \Pb\{|S_n|\geq \lambda\sqrt{n} \} \leq 2 \left(\frac{\sqrt{ek/2}}{\lambda}\right)^k.
+\end{equation}
+
+Compare this with \ref{first moment method} \ref{second moment method}, we find higher moment we control, the rate of decay in tail $\lambda$ improves.
+But the range $S_n$ concentrates in grows slowly, to $O(\sqrt{nk})$ rather than $O(\sqrt{n})$. \mn{The range means the bound for expectation, the decay means the tail probability.}
+
+Now if we assume that $X_1,\dots,X_n$ are not just $k$-wise independent for any fixed $k$, but jointly independent. This bound leads to sub-Gaussian bounds by setting\mn{Because \ref{higher moment method} holds for any $k$ such that $K^2\leq n/k$} $\sqrt{nk}$ to a small multiple of $\lambda$.
+\begin{equation}
+    \label{Sub-Gaussian type bound for sum of independent bounded variable}
+    \Pb\{|S_n| \geq \lambda \sqrt{n}\} \leq C \exp \{-c\lambda^2 \}
+\end{equation}
+for some absolute constant $C,c\geq 0$, provided that $|\lambda| \leq c\sqrt{n}/\sqrt{K}$.
+
+
+\subsection{Exponential moments}
+
+\begin{remark}
+    Exponential are exploits independence much better than power moment methods. But it relie heavily on commutativity of the underlying variables, $e^{X+Y} = e^Xe^Y$. So in random matrices it will be less powerful. 
+    But we can still expect good effects when we apply them to various components of random matrices.
+\end{remark}
+
+\begin{lemma}
+    [Hoeffding's lemma]\label{Hoeffding lemma}
+    Let $X$ be a scalar variable taking values in an interval $[a,b]$. then for any $t>0$,
+    \begin{equation}
+        \E e^{tX} \leq e^{tX}(1+O(t^2\Var (X \exp \{O(t(b-a))\})))
+    \end{equation} 
+    In particular,
+    \begin{equation}\label{Hoeffding lemma particular}
+        \E e^{tX} \leq e^{t\E X} \exp \{O(t^2(b-a)^2)\}
+    \end{equation}
+
+    Sharply
+    \begin{equation}
+        \E e^{tX} \leq e^{t\E X} \exp \{t^2(b-a)^2/8\}
+    \end{equation}
+\end{lemma}
+
+\begin{proof}
+    It suffices to prove the first inequality, as the second then follows using the bound $\Var \leq (b-a)^2$ and from variaous elementary esimates\mn{$O(t^2(b-a)^2\exp\{O(t(b-a))\}) = O(t^2(b-a)^2)+\exp \{O(t(b-a))\}$, then use $1+x \leq e^x$ and combine the exponential term.}. 
+
+    And by normalising $X$, we may assume $\E(X)=0$ and $b-a =1$, which implies that $X=O(1)$. We then have the Taylor expansion
+    \begin{equation*}
+        e^{tX} = 1+tX+O(t^2X^2 \exp \{O(t)\})
+    \end{equation*}
+
+    Which after taking the expectation gives the claim.
+
+    And the version with sharp constant can be derived as follow. First notice that when we assume $X$ has mean zero it means that $a\leq 0$ a.s.. 
+    And convexity of $e^x$ gives 
+    \begin{equation*}
+        e^{TX} \leq \frac{b-x}{b-a}e^{\lambda a} + \frac{x-a}{b-a}e^{\lambda b}, \quad \forall x \in [a,b]
+    \end{equation*}
+    After taking expectation, and denote $h=\lambda(b-a),p=-a/(b-a)\geq 0$ and $L(h)=-hp+\ln(1-p+pe^h)$, we have 
+    \begin{equation*}
+        \frac{b}{b-a}e^{\lambda a} + \frac{a}{b-a}e^{\lambda b} = e^{L(h)}
+    \end{equation*}
+    Then by Taylor expansion and $L(0)=L'(0)=0$,
+    \begin{equation*}
+        L(h)\leq \frac{1}{8}h^2
+    \end{equation*}
+    Then the claim is proved.
+\end{proof}
+
+
+
+
+\begin{theorem}
+    [Chernoff inequality]\label{Chernoff inequality}
+    Let $X_1,\dots,X_n$ be independent scalar random variables with $|X_i| \leq K $ almost surely, with mean $\mu_i$ and variance $\sigma^2$. Then for any $\lambda\geq0$, one has 
+    \begin{equation*}
+        \Pb (|S_n-\mu| \geq \lambda \sigma) \leq C \max(\exp (-c\lambda^2),\exp (-c \lambda \sigma /K))
+    \end{equation*}
+    for some absolute constants $C,c >0$, where $\mu := \sum_{i=1}^n \mu_i$ and $\sigma^2 := \sum_{i=1}^n \sigma^2_i$.
+\end{theorem}
+
+Here the term $\exp(-c\lambda \sigma /K)$ can be replaced with $(\lambda K/\sigma)^{-c\lambda\sigma/K }$, which is superior when $\lambda K \gg \sigma$.
+
+The Chernoff inequality asserts that $S_n$ is sharply concentrated in the range $\mu+O(\sigma)$. The bound is sharp when $\lambda$ is not too large, one can see that from the next example.
+
+\begin{example}
+    Let $0\leq p \leq \frac{1}{2}$ be fixed independently of $n$, and let $X_1,\dots,X_n$ be idd copies of a Bernoulli random variable that equals 1 with probability $p$, thus $\mu_i = p$ and $\sigma_i^2 = p(1-p)$, so $@mu = np$ and $\sigma^2 = np(1-p)$.
+With Stirling formula we have
+\begin{equation*}
+    \Pb \{|S_n - \mu| \geq \lambda \sigma \} \geq c\exp \{-C\lambda^2 \}
+\end{equation*}
+for some absolute constants $C,c > 0$ and all $\lambda \leq c \sigma$.
+\end{example}
+
+\begin{proposition}
+    [Hoeffding's inequality]\label{Hoeffding's inequality}
+    Let $X_1,\dots,X_n$ be independent real variables, with $X_i$ taking values in an interval $[a_i,b_i]$, and let $S_n := X_1 + \cdots +X_n$. One has 
+    \begin{equation*}
+        \Pb\{|S_n - \E S_n|\geq \lambda\sigma \} \leq C\exp (-c\lambda^2)
+    \end{equation*}
+    for some absolute constants $C,c > 0 $, where $\sigma^2 := \sum_{i=1}^n |b_i-a_i|^2$
+\end{proposition}
+
+It means the independent random variable bounded in a same interval concentrates in sub-Gaussian way.
+
+\begin{theorem}
+    [Azuma's inequality]\label{Azuma's inequality}
+    Let $X_1,\dots,X_n$ be a sequence of scalar random variables with $|X_i| \leq 1$ almost surely. Assume also that we have the marginale difference property
+    \begin{equation}
+        \E (X_i|X_1,...,X_{i-1}) = 0
+    \end{equation}
+    almost surely for all $i=1,\dots,n$. Then for any $\lambda >0$, the sum $S_n:=X_1 + \cdots +X_n$ obeys the large deviation inequality
+    \begin{equation}
+        \Pb\{|S_n|\geq \lambda \sqrt{n} \}  \leq C \exp \{-c\lambda^2 \}
+    \end{equation}
+    for some absolute constants $C,c > 0$.
+\end{theorem}
+
+This means the full assumption of joint independence is not completely necessary for Chernoff-type bounds to be present. It suffices to have a weaker condition called \textit{martingale difference sequence}, where dependence is allowed.
+
+\begin{proof}
+    We assume $X_i$ is real because we can take real and imaginary part. So it suffices to establish the upper tail estimate 
+    \begin{equation*}
+        \Pb\{S_n\geq \lambda \sqrt{n} \}\leq C \exp\{-c\lambda\}
+    \end{equation*}
+    Note that $|S_n|\leq n $ almost surely, so we may assume, WLOG that $\lambda \leq  \sqrt{n}$.
+
+    We consider the exponential moment $\E \exp (tS_n)$ for some parameter $t>0$. We write $S_n = S_{n-1}+X_n$. Then though we cannot split the expectation but we can condition on the $X_1,\dots,X_{n-1}$ instead. After conditioning we can pull out exp$(tS_{n-1})$.
+
+    Then apply Hoeffding's \ref{Hoeffding lemma particular} to prove that
+
+    \begin{equation*}
+        \Pb\{S_n \geq \lambda \sqrt{n} \} \leq \exp(O(nt^2)-t \lambda\sqrt{n})
+    \end{equation*}
+
+    Then optimising in $t$.
+
+\end{proof}
+
+\subsection{Summary}
+
+Summary of inequality to control a sum $S_n$.
+
+\begin{enumerate}
+    \item The zeroth moment method \ref{zero moment method} requires no moment assumptions but is only useful when $X_i$ is usually zero and has no decay in $\lambda$.
+    \item The first moment method \ref{first moment method} only requires abosolute integrability on $X_i$ but has only a linear decay in $\lambda$.
+    \item The second moment method \ref{second moment method} requires second moment and pairwise independence bounds on $X_i$ and gives a quadratic decay in $\lambda$.
+    \item Higher moment bounds \ref{higher moment method} requires boundedness and k-wise independence, and give a $k^{th}$ power decay in $\lambda$(Or quadratic exponential decay after optimising in $k$).
+    \item Exponential moment bounds \ref{Chernoff inequality} and \ref{Azuma's inequality} require boundedness and joint independence (or martingale behaviour) and gives quadratic-exponential decay in $\lambda$.
+\end{enumerate}
+
+
+\section{The truncation method}
+
+As we see from above, the strongest decay in $\lambda$ require strong boundedness and independence hypothese.
+
+But one can often partially extend these strong results from the case of bounded random variables to that of unbounded random variables (provided one still has strong decay of these variables) by \textit{truncation method}.
+
+The basic idea here is to take each random variable $X_i$ and split it as $X_i=X_{i,leq N} + X_{i,> N}$, where $N$ is a truncation parameter to be optimisied later(possibly in a manner depending on $n$). 
+
+The idea is then to estimate the tail of $S_{n,\leq N}$ and $S_{n,>N}$ by two different means. With $S_{n\leq N}$, the large deviation inequality is in role. With $S_{n>N}$, the underlying variables are not bounded, but they tend to have small zeroth and first moments, and so the bounds based on those moment methods tend to be powerful. 
+
+\begin{theorem}
+    [Weak Law of large numbers]
+    Let $X_1,X_2,...$ be iid scalar random variables with $X_i \equiv X$ for all $i$, where $X$ is absolutely integrable. Then $S_n/n$ converges in probability to $\E X$.
+\end{theorem}
+
+\begin{proof}
+    WLOG assume $X$ has mean zero. Our task is then to show that $\Pb (|S_n| \geq \epsilon n)=o(1)$ for all fixed $\epsilon > 0$.
+
+    If $X$ has finite variance, the large deviation inequality \ref{second moment method} derive the claim.
+
+    If $X$ do not have finite variance, we perform a truncation method. 
+
+    Let $N$ be a large parameter to be chosen later, then split $X_i = X_{i,\leq N}+X_{i,>N}$. The variable $X_{i,\leq N}$ is bounded so has finite variance. 
+    From the dominated convergence theorem \ref{dominate convergence theorem} we see that $|\E X_{\leq N}| \leq \epsilon/4$ if $N$ is large enough. And apply the large deviation inequality to $S_n$ we have
+    \begin{equation*}
+        \Pb\{|S_{n,\leq N}| \geq \epsilon n/2 \} =o(1)
+    \end{equation*}
+    where the rate of decay here depends on $N$ and $\epsilon$.
+
+    For tail $X_{>N}$ we use the first moment method \ref{first moment method}
+    \begin{equation*}
+        \Pb \{|S_{n,>N} \geq \epsilon n /2 \} \leq \frac{2}{\epsilon} \E |X_{>N}|.
+    \end{equation*}
+    But by dominated convergence theorem we may make $\E|X_{>N}$ as small as we please, smaller that $\delta>0$ by taking $N$ large enough.
+
+    Conbine we have 
+    \begin{equation*}
+        \Pb \{|S_n|\geq \epsilon n \} = \frac{2}{\epsilon} \delta +o(1)
+    \end{equation*}
+    since $\delta$ is arbitrary small, we obtain the claim.
+\end{proof}
+
+We can use the trick of \textit{sparsification trick} to prove the strong law of large numbers. 
+
+\begin{theorem}
+    [Strong law of large numbers]
+    Let $X_1,X_2,\dots$ be iid scalar random variables with $X_i \equiv X$ for all $i$, where $X$ is absolutely integrable. Then $S_n/n$ converges almost surely to $\E X$. 
+\end{theorem}
+
+\begin{proof}
+    WLOG we assume $X$ is real. By splitting $X$ into positive and negative parts, we futhermore assume $X$ is non-negative. In such case we won't assume it's mean zero, non-negative bring $S_n$ to be non-decreasing.
+
+    Then once $X$ is non-negative, we see that the empirical averages $S_n/n$ cannot decrease too quickly in $n$. In particular we observe that \mn{By expansion of geometric series.}
+    \begin{equation*}
+        \ S_m/m \leq (1+O(\epsilon)) \ S_n/n \text{ whenever } (1-\epsilon) n \leq m \leq n.
+    \end{equation*}
+
+    Next, we apply a sparsification trick. Let $0<\epsilon<1$. Suppose we knew that, almost surely, $S_{n_m}/n_m$ converged to $\E X$ for $n=n_m$ of the form $n_m:= \left\lfloor  (1+\epsilon)^m\right\rfloor$ for some integer $m$. 
+    Then, for all other values of $n$, we see that asymptotically, $S_n/n$ can only fluctuate by a multiplicative factor of $1+O(\epsilon)$ because of the monotone nature of $S_n$\mn{Check the $n$ between $n_m,n_{m+1}$, we see the where the multiplicity comes from.}. 
+    Which is also illustrated above.
+    
+    And because above and countable additivity, it suffices to show that $S_{n_m}/n_m$ converges to $\E X$\mn{Then take $\epsilon \to 0$ ny setting $\epsilon = 1/j$ to obtain the claim.}. 
+    Actually it will be enough to show that almost surely, one has $|S_{n_m}/n_m -\E X|\leq \epsilon$ for all but finitely many $m$. Because we can make $m$ large enough for $S_{n_m}/n_m$ to first get close to $\E X$.
+
+    Fix $\epsilon$. Split $X=X_{\leq N_m} + X_{>N_m}$ and $S_{n_m} = S_{n_m,>N_m} + S_{n_m,\leq N_m}$ but we now allow $N=N_m$ to depend on $m$.
+
+    By dominate convergence theorem \ref{dominate convergence theorem}, for $N_m$ large enough we have $|EX_{\leq N_m}-\E X| \leq \epsilon/2$.
+
+    Apply second moment method \ref{second moment method}, we see that 
+    \begin{equation*}
+        \Pb\{|S_{n_m,\leq N_m/n_m} -\E X|> \epsilon \} \leq \frac{C_\epsilon}{n_m} \E |X_{\leq N_m}|^2
+    \end{equation*}
+
+    for some $C_\epsilon$ depending only on $\epsilon$. Then apply the first moment method to handle the tail, we see that 
+    \begin{equation*}
+        \Pb\{|S_{n_m}/n_m-\E X|>\epsilon \} \leq \frac{C_\epsilon}{n_m} \E |X_{\leq N_m}|^2 +n_m \Pb\{|X|>N_m\}.
+    \end{equation*}
+
+    By Borel Cantelli lemma \ref{Borel Cantelli lemma}, if suffices to prove that we can choose $N_m$ such that 
+    \begin{equation*}
+        \sum_{m=1}^\infty \frac{C_\epsilon}{n_m} \E |X_{\leq N_m}|^2,\quad \sum_{m=1}^\infty n_m \Pb\{|X|>N_m\}
+    \end{equation*}
+    are both finite. \mn{Then, almost surely, there are at most finitely many $m$ for which the inequality holds}
+\end{proof}
+
+
+\begin{proposition}
+    Let $X_1,\dots,X_n = X$ be iid copies of sub-Gaussian random variable $X$, thus $X$ obeys a bound of the form 
+    \begin{equation}
+        \Pb\{|X|\geq t\} \leq C\exp (-ct^2)
+    \end{equation}
+    for all $t>0$ and some $C,c >0$. Let $S_n := X_1+\cdots+X_n.$ Then for any suffiently large $A$ independent of $n$, we have 
+    \begin{equation*}
+        \Pb \{|S_n-n\E X|\geq An\} \leq C_A \exp \{-c_A n\}
+    \end{equation*}
+    for some constants $C_A,c_A$ depending on $A,C,c$. Furthermore, $c_A$ grows linearly in $A$ as $A\to \infty$.
+\end{proposition}
+
+\begin{proof}
+    We assume $X$ is normalised to have 0 mean.
+
+    We perform a dyadic decomposition
+
+    \begin{equation*}
+        X_i = X_{i,0} + \sum_{m=1}^\infty X_{i,m}
+    \end{equation*}
+    where $X_{i,0} := X_i \mathbf{I} (X_i \leq 1)$ and $X_{i,m} := X_i \mathbf{I} (2^{m-1} < X_i \leq 2^m)$. We similarly split $S_n$
+    \begin{equation*}
+        S_n = S_{n,0}+\sum_{m=1}^\infty S_{n,m}
+    \end{equation*}
+    where $S_{n,m} = \sum_{i=1}^n X_{i,m}$. Then by the union bound and the pigeonhole principle\mn{By splitting $An$ to different hole, there must be at least one hole that $S_{n,i}$ is larger or in the whole.} we have
+    \begin{equation*}
+        \Pb(|S_n| \geq An) \leq \sum_{m=0}^\infty \Pb \left(|S_{n,m}| \geq \frac{A}{100(m+1)^2}n\right).
+    \end{equation*}
+    (say).
+
+    Which basically means we need to prove any upper bound of LHS.
+
+    Each $X_{i,m}$ is clearly bounded in magnitude by $2^m$; from the sub-Gaussian hypothesis one can verify that the mean and variance of $X_{i,m}$ are at most $C'\exp\{-c'2^{2m}\}$ for some $C',c' >0$. If $A$ is large enough, an application of the Chernoff bound gives
+    By choosing $\lambda = c''A\exp\{c' 2^{2m}/2\}$ for some small $c''>0$.\mn{I have no idea about how to make this calculation.}
+    \begin{equation*}
+        \Pb\{|S_{n,m}| \geq 2^{-m-1}An\} \leq C'2^{-m}\exp\{-c'An\}
+    \end{equation*}
+    (say) for some $C'c'>0$, and the claim follows.
+\end{proof}
+
+Sub-Gaussian assumption can be generalised to a sub-exponential tail hypothesis
+\begin{equation*}
+    \Pb\{|X|\geq t\} \leq C\exp\{-ct^p\}
+\end{equation*}
+provided $p>1$.
+
+\section{Lipschitz combinations}
+
+\begin{theorem}
+    [McDiarmid's inequality]
+    Let $X_1,\dots,X_n$ be independent random variables taking values in range $R_1,\dots,R_n$ and let $F: R_1\times \dots \times R_n \to \mathbf C$ be a function with the property that if one freezes all but the $i^{th}$ coordinate of $F(x_1,\dots,x_n)$ for some $1\leq i\leq n$, then F only fluctuates by at most $c_i >0$, thus
+    \begin{equation*}
+        |F(x_1,\dots,x_{i-1},x_i,x_{i+1},\dots,x_n) - F(x_1,\dots,x_{i-1},x_i',x_{i+1},\dots,x_n)| \leq c_i
+    \end{equation*}
+    for all $x_j \in X_j,x_i'\in X_i$ for all $i\leq j\leq n$. Then for any $\lambda >0$, one has 
+    \begin{equation*}
+        \Pb\{|F(X)-\E F(X)|\geq \lambda \sigma \} \leq C \exp \{-c\lambda^2\}
+    \end{equation*}
+    for some absolute constants $C,c >0$, where $\sigma^ := \sum_{i=1}^n c_i^2$.
+\end{theorem}
+
+\begin{proof}\label{Proof of Mcdiarmid}
+    We may assume that $F$ is real. By symmetry, it suffices to show that one-sided estimate
+    \begin{equation*}
+        \Pb\{F(X)-\E F(X)\geq \lambda \sigma^2 \}  \leq C \exp \{-c \lambda^2\}.
+    \end{equation*}
+    Use exponential method using $Y:=F(X)-\E (F(X)|X_1,..   ,X_{n-1})$ write
+    \begin{equation*}
+        \E \{\exp(tF(X))|X_1,\dots,X_{n-1}\} = \E \{\exp(tY)|X_1,\dots,X_{n-1}\}\exp\{t\E(F(X)|X_1,\dots,X_{n-1})\}
+    \end{equation*}
+    Then apply Hoeffding's \ref{Hoeffding lemma particular} with the property of $F$ and integrate out conditioning to see
+    \begin{equation*}
+        \leq \exp(O(t^2c_n^2))\E \exp\{t\E (F(X)|X_1,\dots,X_{n-1})\}
+    \end{equation*}
+    Noticing $\E (F(X)|X_1,\dots,X_{n-1})$ is actually another function $F_{n-1}$ have the property like $F$ but hold for $n-1$ numebr of parameters. 
+    Then iterate the computation $n$ times,
+    \begin{equation*}
+        \leq \exp\{\sum_{i=1}^n O(t^2c_i^2)\}\exp\{t\E F(X)\}
+    \end{equation*}
+
+    Then use Markov's inequality and rearrangements 
+    \begin{equation*}
+        \Pb (F(X)-\E F(X)\geq \lambda\sigma) \leq \exp(O(t^2\sigma^2)-t\lambda\sigma)
+    \end{equation*}
+
+    and optimise on $t$ to obtain the claim.
+
+\end{proof}
+
+McDiarmid implies Hoeffding's inequality \ref{Hoeffding's inequality}, and it is a tensorisation of Hoeffding's lemma \ref{Hoeffding lemma}. By applying this trick to random variables taking value in more sophisticated metric spaces than an interval leading to a class of concentration of measure know as \textit{transportation cost-information inequality}.
+
+The more powerful concentration of measure results do not just exploit Lipschitz type behaviour in each individual variable, but joint Lipschitz behaviour. 
+
+\begin{proposition}
+    [Gaussian random variable]
+    Linear combination of Gaussian variables is a still Gaussian.
+
+    Gaussian random variables are invariant under rotation.
+\end{proposition}
+
+\begin{lemma}
+    [Measure-theoretic Jensen's inequality]\label{Measure-theoretic Jensen's inequality}
+    Let $a,b\in \R,f:[a,b]\to \R$ is non-negative Lebesgue integrable function, $\phi$ is a convex function on the real line. The Lebesgue measure of $[a,b]$ need not to be unity. We can rescale to make the measure unity.
+    \begin{equation*}
+        \phi (\frac{1}{b-a}\int_a^b f(x) \rmd x) \leq \frac{1}{b-a} \int_a^b \phi(f(x))\rmd x
+    \end{equation*}
+\end{lemma}
+
+\begin{theorem}
+    [Gaussian concentration inequality for Lipschitz function]\label{Gaussian concentration inequality for Lipschitz function}
+    Let $X_1,\dots,X_n \equiv N(0,1)_{\R}$ be iid real Gaussian variables, and let $F:\R^n \to \R $ be a 1-Lipschitz function. Then for any $\lambda$ one has 
+    \begin{equation*}
+        \Pb\{|F(X)-\E F(X)|\geq \lambda \} \leq C\exp (-c\lambda^2)
+    \end{equation*}
+    for some absolute constants $C,c>0$.
+\end{theorem}
+
+\begin{proof}
+    Centering does not harm, mean zero assumed. By symmetry it suffices to show the upper tail estimate
+    \begin{equation*}
+        \Pb (F(X)\geq \lambda) \leq C\exp (-c\lambda^2).
+    \end{equation*}
+    The Lipschitz bound on $F$ implies the gradient estimate 
+    \begin{equation*}
+        |\nabla  F(x)| \leq 1
+    \end{equation*}
+    for all $x\in \R^n$.
+
+    Then use the exponential moment method, it suffices to show that
+    \begin{equation*}
+        \E \exp\{t F(X)\}\leq \exp\{Ct^2\}
+    \end{equation*}
+    for some constant $C>$ and all $t>0$, then use Markov's inequality and optimisation in $t$ gaves us the claim.
+
+    To exploit Lipschitz nature of $F$, we will need to introduce a second copy of $F(X)$. \textit{Since we can expect the exponential moment is bounded by the exponential moment of their difference by independence, convexity and mean zero.(together with Jensen).}
+
+    Then the difference will be bounded by the integral along a segament between $F(X),F(Y)$. \mn{Having the difference is the key to exploit the Lipschitz property.}
+
+    Here goes the next technique. We do not integrate along the segament, instead we integrate along an arc
+    \begin{equation*}
+        F(X)-F(Y) = \int_0^{\pi/2} \frac{\rmd}{\rmd \theta} F(Y\cos \theta +X\sin \theta)\rmd \theta.
+    \end{equation*}
+    The reason is that after all we can exploit Lipschitz property once we have the difference using integral on any curve connecting two points. 
+    Why don't we choose an orbit exploit the nature of the random variable better? 
+
+    $X_\theta := Y \cos \theta +X\sin \theta$ is another Gaussian random variable equivalent to $X$\mn{Same mean, variance}. And it's derivative $X_{\theta}' := -Y\sin \theta+X\cos \theta$ is the same. And most importantly, these two random variables are independent.\mn{Part of the reason is because they are Gaussian. This really exploit the nature of Gaussian.}
+
+    Then apply general Jensen's \ref{Measure-theoretic Jensen's inequality}. and chain rule and expectation obtain
+
+    \begin{equation*}
+        \E \exp\{t(F(X)-F(Y))\}\leq \frac{2}{\pi} \int_0^{\pi/2}\E \exp \left(\frac{\pi t}{2} \nabla F(X_\theta)\cdot X_\theta'\right)
+    \end{equation*}
+    Conditioning on $X_\theta$ then estimate\mn{By independence.}, and then integrate out the conditioning.
+\end{proof}
+
+Gaussian concentration is the same thing as the blow-up phenomenoen.
+
+\ref{Gaussian concentration inequality for Lipschitz function} is equivalent to the inequality 
+\begin{equation*}
+    \Pb(X\in A) \Pb(X\notin A_\lambda) \leq C \exp(-c\lambda^2)
+\end{equation*}
+holding for all $\lambda>0$ and all measurable sets $A$, where $X=(X_1,\dots,X_n)$ is an $\R^n$-valued random variable with iid Gaussian components $X_1,\dots,X_n \equiv N(0,1)_\R$, and $A_\lambda$ is the $\lambda$-neighbourhood of $A$. 
+
+To prove this one need to first replace the expectation in to median. 
+On oneside (from the theorem to this), first assuming $A$ has probability measure larger than $1/2$ (if not just take the completion as $A$). Then set $F(x) := d(x,A)$ to obtain the bound. 
+On the other side (from this to the theorem), Let $A:=F(X) \leq \M F(X)$ to conclude the bound.
+
+\begin{theorem}
+    [Talagrand concentration inequality]\label{Talagrand concentration inequality}
+    Let $K>0$, and let $X_1,\dots,X_n$ be independent complex variables with $|X_i| \leq K$ for all $1\leq i \leq n$. 
+    Let $F:\mathbb C\to \R$ be a 1-Lipschitz convex function (where we identify $C^n$ with $\R^{2n}$ for the purpose of defining "Lipschitz" and "convex"). Then for any $\lambda$ one has
+    \begin{equation*}
+        \Pb\{|F(X)-\M F(X)|\geq \lambda K \} \leq C\exp (-c \lambda^2)
+    \end{equation*}
+    and
+    \begin{equation*}
+        \Pb\{|F(X)-\E F(X)|\geq \lambda K \} \leq C\exp (-c \lambda^2)
+    \end{equation*}
+    for some absolute constants $C,c>0$, where $\M F(X)$ is a median of $F(X)$.
+\end{theorem}
+
+The proof of Talagrand was based on a technique called combinatorial distance which I really didn't get it. I will try to read other material for the proof since he said this theorem will be relied based on.
+
+I will first go for the proof using the Log-Soblev from Ledoux. This will give us the upper bound but not the lower bound since the symmetry was gone because of assumption that $F$ is convex. 
+
+\begin{theorem}
+    [Log-Sobolev inequality]\label{log-sobolev inequality}
+    Let $F:\mathbb C^n \to \R$ be a smooth convex function. Then
+    \begin{equation*}
+        \E F(X) e^{F(X)} \leq (\E e^{F(X)})(\log \E e^{F(X)})+C \E e^{F(X)} |\nabla F(X)|^2
+    \end{equation*}
+    for some absolute constant $C$ (independent of $n$).
+\end{theorem}
+
+\begin{remark}
+    If one set $f:=e^{F/2}$ and normalises $\E f(X)^2=1$, this inequality becomes 
+    \begin{equation*}
+        \E |f(X)|^2 \log |f(X)|^2 \leq 4C \E |\nabla f(X)|^2
+    \end{equation*}
+    which more closely resembles the classical log-Sobolev inequality. The constant $C$ here can be taked to be 2.
+\end{remark}
+
+\begin{proof}
+    We first establish the 1-dimensional case. If we let $Y$ be an independent copy of $X$, observe that left-hand side can be rewritten as 
+    \begin{equation*}
+        \frac{1}{2}\E (F(X)-F(Y))(e^{F(X)}-e^{F(Y)})+(\E F(X)) (\E e^{F(X)}).
+    \end{equation*}
+    From Jensen's inequality we have 
+    \begin{equation*}
+        \E F(X) \leq \log \E e^{F(X)}
+    \end{equation*}
+    So it suffices to prove the estimation of the change term,
+    \begin{equation*}
+        \frac{1}{2}\E (F(X)-F(Y))(e^{F(X)}-e^{F(Y)}) \leq C\E e^{F(X)}|\nabla F(X)|^2
+    \end{equation*}
+    $X,Y$ is bounded, $F$ is smooth and convex \mn{bounded from below by its tangent line.} we have the following when $F(X)\geq F(Y)$
+    \begin{eqnarray*}
+        F(X)-F(Y) &= O(|\nabla F(X)|) \\
+        e^{F(X)} - e^{F(Y)} &= O(|\nabla F(X)|e^{F(X)})
+    \end{eqnarray*}
+    Hence by taking the expectation we obtain the claim. Vice versa.
+
+    Induct on $n$ to show the general case,\mn{Keeping care to ensure that the constant $C$ does not change in this induction process.}
+
+    Write $X=(X',X_n)$, where $X':=(X_1,\dots,X_{n-1})$. Denote the $n-1$ dimensional gradient and $f(X_n):=\log \E (e^F(X)|X_n)$.
+    
+    \begin{equation*}
+        \E(F(X)e^{F(X)}|X_n) \leq f(X_n) e^{f(X_n)} + C\E (e^{F(X)}|\nabla'F(X)|^2\big | X_n)
+    \end{equation*}
+    where the second expectation is taken over $X_n$.
+
+    Conditioning leaves $\log \E(e^{F(X)}|X_n)$ unsetteled. Integrate the conditioning out and we find we need to further estimate the term $\E f(X_n) e^{F(X_N)}$.
+    \begin{equation*}
+        \E(F(X)e^{F(X)}) \leq \E f(X_n) e^{f(X_n)} + C\E (e^{F(X)}|\nabla'F(X)|^2)
+    \end{equation*}
+    First $f$ is still convex. (By Holder's and Convexity of $F$)
+    \begin{align*}
+        (1-t)f(X_n)+tf(X_n) & = \log \E(e^{F(X)}|X_n)^{1-t} \cdot \E(e^{F(X)}|Y_n) \\
+        & \geq \log \E (e^{(1-t)F(X,X_n)+tF(X,Y_n)}|X_n,Y_n) \\
+        & \geq f((1-t)X_n+tY_n)
+    \end{align*}
+    By the result from $n=1$
+    \begin{equation*}
+        \E f(X_n)e^{f(X_n)} \leq (\E e^{F(X)}) ( \log \E e^{F(X)} ) + C\E e^{f(X_n)} |f'(X_n)|^2
+    \end{equation*}
+
+    We see that the the only thing left here is to estimate $ e^{f(X_n)}|f'(X_n)|^2$. By the chain rule,
+
+    \begin{align*}
+        e^{f(X_n)}|f'(X_n)|^2 &= e^{-f(X_n)}|\E_{X'}e^{F(X)} F_{X_n}(X)|^2 \\
+        &\leq e^{-f(X_n)}|\E_{X'} e^{F(X)}|^2 |F_{X_n}(X)|^2 \\
+        &\leq \E e^{F(X)} |F_{x_n}(X)|^2
+    \end{align*}
+
+    Taking the expectation then the claim follows.
+\end{proof}
+
+Now the proof for onesided Talagrand's inequality follows
+\begin{proof}
+    To prove the Talagrand's concentration inequality \ref{Talagrand concentration inequality}, we let $F$ to be convex and 1-Lipschitz. Applying the Log-Soblev inequality \ref{log-sobolev inequality} to $tF$ for any $t>0$, we conclude 
+    \begin{equation*}
+        \E tF(X) e^{tF(X)} \leq (E e^{tF(X)}) (\log \E e^{tF(X)}) +C t^2\E e^{tF(X)}
+    \end{equation*}
+    
+    Setting $H(t) := \E e^{tF(X)}$, we can rewrite this as a differential inequality \mn{Log-Sobolev seems to make sense in this typical differential equation arguments.}
+    \begin{equation*}
+        tH'(t)\leq H(t)\log H(t) +Ct^2 H(t)
+    \end{equation*}
+    
+    which we can rewrite as 
+    \begin{equation*}
+        \frac{\rmd}{\rmd t} (\frac{1}{t}\log H(t)) \leq C.
+    \end{equation*}
+    
+    From Taylor expansion
+    
+    \begin{equation*}
+        \frac{1}{t}( \log \E e^{tF(X)} )= \frac{1}{t}\left(0+t\frac{\E F(X)e^{tF(X)}}{\E e^{tF{X}}}+o(t^2)\right)
+    \end{equation*}
+    
+    we see that 
+    \begin{equation*}
+        \frac{1}{t} \log H(t) \to \E F(X)
+    \end{equation*}
+    as $t\to \infty$, and thus 
+    \begin{equation*}
+        \frac{1}{t} \log H(t) \leq \E F(X) +Ct
+    \end{equation*}
+    for any $t>0$.
+    
+    \begin{equation*}
+        \E e^{tF(X)} \leq \exp(t\E F(X)+Ct^2)
+    \end{equation*}
+    
+    Then by Markov \ref{first moment method}, we conclude that 
+    \begin{equation*}
+        \Pb\{F(X)-\E F(X)>\lambda \}\leq \exp(Ct^2-t\lambda).
+    \end{equation*}
+    
+    Optimising in $t$ gives one-side Talagrand's for convex function.
+\end{proof}
+
+The same argument, starting with Gross's log-Sobolev inequality for the Gaussian measure gives the upper tail component of Talagrand's concentration with no convexity hypothesis on $F$. The situation is now symmetry with respect to reflection $F\mapsto -F$, so we can have upper and lower bound at the same time.
+
+This method of obtaining concentration inequalities from log-Sobolev inequality (Poincare-type inequality) by combining the latter with the exponential moment method is know as \textit{Herbst's argument}.
+
+\begin{theorem}
+    [Distance between random vector and a subspace]
+    Let $X_1,\dots,X_n$ be independent complex-valued random variables with mean zero and variance 1, and bounded almost surely in magnitude by $K$. Let $V$ be a subspace of $\mathbb{C}^n$ of dimension $d$. Then for any $\lambda>0$, one has 
+    \begin{equation*}
+        \Pb\{|d(X,V)-\sqrt{n-d}|\geq \lambda K \} \leq C \exp(-c\lambda^2)
+    \end{equation*}
+    for some absolute constants $C,c>0$.
+\end{theorem}
+
+This can be interpreted as an assertation which claim the distance between a random vector $X$ and an arbitraty subspace $V$ is typically equal to $\sqrt{n-\dim V}+O(1)$.
+
+\begin{proof}
+    The function $z\mapsto d(z, V)$ is convex and 1-Lipschitz. From Talagrand's concentration \ref{Talagrand concentration inequality}, one has
+    \begin{equation*}
+        \Pb\{|d(X,V)-\M d(X,V)\geq \lambda K\} \leq C\exp(-c\lambda^2).
+    \end{equation*}
+
+    So it suffices to show that
+    \begin{equation*}
+        \M d(X,V) = \sqrt{n-d} +O(K)
+    \end{equation*}
+
+    This can be done with a second moment calculation, 
+    \begin{equation*}
+        d(X,V)^2 = ||\pi (X)||^2
+    \end{equation*}
+    where $\pi$ is the orthogonal projection to the $V^\bot$.
+    By spectrum theorem\mn{One can write orthogonal projection as $\pi =EE^T$, where $E$ has column of orthonormal basis $e_i$. Or $E(E^TE)^{-1}E^T$.}, we can see that $\E d(X,V)^2 = \mathrm{tr} (\pi) = n-d$. For some concentration of around the mean of $d(X,V)^2$, we compute the variance of it.
+    \begin{equation*}
+        d(X,V)^2 -\E d(X,V)^2 = \sum_{1\leq i,j\leq n} p_{ij}(X_i\bar X_j)-\delta_{ij}
+    \end{equation*}
+    The summand here are pairwise uncorrelated for $1\leq i <j\leq n$. And they are independent hence uncorrelated for $1\leq i=j\leq n$. Each summand also has a variance of $O(K^2)$. So we have the variance bound
+    \begin{equation*}
+        \Var (d(X,V)^2) = O(K^2 \sum_{1\leq i,j\leq n}|p_{ij}|^2) +O(K^2 \sum_{1\leq i\leq n}|p_{ij}|^2) = O(K^2(n-d))
+    \end{equation*}
+    where $p_{ij}$ is the components of $\pi$. The first term has bound $O(K^2 n)$ while the second has $O(K^2(n-k))$.
+
+    Then from Chebyshev's inequality \ref{second moment method}, the median is equal to $n-d+O(\sqrt{K^2 (n-d)})$, which implies taking square roots\mn{Try to view $n-d =\sqrt{n-d}^2$.} that the median of $d(X,V)$ is $\sqrt{n-d}+O(K)$ as desired.
+\end{proof}
