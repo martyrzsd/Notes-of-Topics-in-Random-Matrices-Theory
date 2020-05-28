@@ -333,6 +333,8 @@ We can see from this theorem, a sub-Gaussian random variable is uniquely determi
 
 If the tail is heavier, this cound fail. Like a smooth function is not determined by its derivatives at one point if that function is not analytic. 
 
+
+\subsection{Proof of central limit theorem}
 When it turns to the proof of central limit theorem, WLOG we assume $X$ is bounded, notice that then $X$ becomes sub-Gaussian automatically. 
 So it suffices to show that 
 \begin{equation*}
@@ -340,7 +342,60 @@ So it suffices to show that
 \end{equation*}
 for all $k=0,1,2,\dots,$ where $G\equiv N(0,1)_\R$  is a standard Gaussian variable.
 
+\begin{proposition}
+    [Moment of standard Gaussian random variable]
+    Let $k$ be a natural numbner, and let $G\equiv N(0,1)_\R$. 
+    Then $\E G^k$ vanish when $k$ is odd, and equal to $\frac{k!}{2^{k/2}(k/2)!}$ when $k$ is even. 
+\end{proposition}
 
+We can do it by checking the characteristic function of Gaussian distribution 
+\begin{equation*}
+    F(t) = e^{it\mu}e^{-\sigma^2 t^2/2}.
+\end{equation*}
+taking the $k$ times of the derivitive to generate $k$th moments.
 
+Using the definition of $Z_n$ and linearity of expectation, we can expand the $k$th moment as 
+\begin{equation*}
+    \E Z_n^k = n^{-k/2}\sum_{1\leq i_1,\dots,i_k\leq n} \E X_{i_1}\dots X_{i_k}
+\end{equation*}
+
+First we look at some small values of $k$.
+\begin{enumerate}
+    \item For $k=0$, the expression is trivially 1.
+    \item For $k=1$, this expression is 0 thanks to the mean zero hypothesis.
+    \item For $k=2$, we can split the expression into the diagonal and off diagonal components:\begin{equation*}
+        n^{-1}\sum_{1\leq i\leq n} \E X^2 +n^{-1}\sum_{1\leq i\leq j}\E 2X_i,X_j.
+    \end{equation*}
+    Each summand in the first sum is 1 because of the unit variance. Each summand in the second sum is 0 since the mean zero and independent hypothesis. So the second moment $\E Z_n^2$ is 1.
+    \item For $k=3$, we do the similar expansion
+    \begin{equation*}
+        n^{-3/2} \sum_{1\leq i\leq n}\E X^3_i +n^{-3/2}\sum_{1\leq i<j\leq n} \E 3X_i^2 X_j +3X_i X_j^2 +n^{-3/2} \sum_{1\leq i<j<k\leq n}\E 6X_iX_jX_k.
+    \end{equation*}
+    The summands in the latter two sums vanish because of the joint independence and mean zero hypothesis. The summand in the first sum does not vanish, but are $O(1)$.\mn{$O(1)$ in the sense that bounded by $n$.} Hence the first term is $O(n^{-1/2})$, which is asymptotically negligible. The third moment $\E Z_n^3$ goes to zero.
+    \item For $k=4$, the expansion goes as 
+    \begin{equation*}
+        \begin{array}{l}
+            n^{-2} \sum_{1 \leq i \leq n} \mathbf{E} X_{i}^{4}+n^{-2} \sum_{1 \leq i<j \leq n} \mathbf{E} 4 X_{i}^{3} X_{j}+6 X_{i}^{2} X_{j}^{2}+4 X_{i} X_{j}^{3} \\
+            +n^{-2} \sum_{1 \leq i<j<k \leq n} \mathbf{E} 12 X_{i}^{2} X_{j} X_{k}+12 X_{i} X_{j}^{2} X_{k}+12 X_{i} X_{j} X_{k}^{2} \\
+            +n^{-2} \sum_{1 \leq i<j<k<l \leq n} \mathbf{E} 24 X_{i} X_{j} X_{k} X_{l}
+            \end{array}
+    \end{equation*}
+    Most of the term vanish expect the first sum, which is $O(n^{-1})$, and is again asymptotically negligible, and the sum $n^{-2}\sum_{1\leq i<j\leq n}\E 6X_i^2X_j^2$, which by the independence and unit variance assumption works out to $n^{-2}6\binom{n}{2}=3+o(1)$. Thus the fourth moment $\E Z_n^4$ goes to 3. 
+\end{enumerate}
+Now we tackle the general case. Ordering the indices $i_1,\dots,i_k$ as $j_1<\cdots<j_m$ for some $1\leq m\leq k$, with each $j_r$ occuring with multiplicity $a_r\geq 1$. \mn{$m$:numbers of different $X_i$, $a_i$: degree of each $X_i$, $j$: the index of $X_i$.}
+
+We see that $\E Z_n^k$ is the sum of all terms of the form
+\begin{equation}\label{General component of higher moments in CLT}
+    n^{-k/2}\sum_{1\leq j_1<\cdots<j_m\leq n} c_{k,a_1,\dots,a_m}\E X_{j_1}^{a_1}\dots X_{j_m}^{a_m}
+\end{equation}
+where $1\leq m \leq k$, $a_1,\dots,a_m$ are positive integers adding up to $k$, and $c_{k,a_1,\dots,a_m}$ is the multinomial coefficient
+\begin{equation*}
+    c_{k,a_1,\dots,a_m}:=\frac{k!}{a_1!\dots a_m!}
+\end{equation*}
+The total number of such terms is $2^{k-1}$.\mn{One must }
+
+As we obseved, if any of the $a_r$ are equal to 1, then every summand in \ref{General component of higher moments in CLT} vanishes by joint independence and the mean zero hypothesis. Thus we restrict attention to those expressions for which all the $a_r$ are at least 2. Since all the $a_r$ sum up to $k$, we conclude that $m$ is at most $k/2$.
+
+On the other hand, the total number of summands in \ref{General component of higher moments in CLT} is at most $n^m$\mn{Actually it's $\binom{n}{m}$}and the summands are bounded for fixed $k$ since $X$ is bounded. Thus if $m$ is strictly less than $k/2$, then the expression 
 
 
