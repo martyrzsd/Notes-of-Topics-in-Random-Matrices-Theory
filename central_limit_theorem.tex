@@ -517,7 +517,7 @@ Then optimise in $\epsilon$ to conclude that
 
 We see that comparing with \ref{berry esseen theorem}, the decay exponent in $n$ in the error term has degraded by a factor of $1/4$. This degradation is acceptable in random matrices.
 
-\subsection{Stein's method}
+\section{Stein's method}
 
 The probability density function $\rho(x) := \frac{1}{\sqrt{2\pi}}e^{-x^2/2} $ of the standard normal distribution $N(0,1)_\R$ can be viewed as a solution to the ordinary differential equation
 \begin{equation}
@@ -559,5 +559,188 @@ whenver $f$ is continuously differentiable with $f,f'$ both bounded, then $X$ is
         \E \varphi(X_n) -\E \varphi(G) \to 0
     \end{equation*}
 
-    whenever $\varphi : \R \to \R$ is bounded continuous function.
+    whenever $\varphi : \R \to \R$ is bounded continuous function. We normalize $\varphi$ to be bounded in magnitude by 1. 
+    
+    The function $\varphi (\cdot)-\E \varphi(G)$ has zero expectation when one subsitutes $G$ in in. So if we can find a way to represent $\varphi (\dot)-\E \varphi(G)$ with $f,f'$ continuously differentiable and bounded. We are done.
+
+    Namely we will be interested in find a form of 
+    \begin{equation}\label{Stein representation}
+        \varphi(x)-\E \varphi(G) = f'(x)-xf(x)
+    \end{equation}
+
+    Solve this equation and find a solution of $f$, \mn{This is known as Stein transform.}
+    \begin{equation}\label{Stein transform}
+        f(x) := e^{x^2/2} \int^x_{-\infty}e^{-y^2/2}(\varphi(y)-\E \varphi(G))\rmd y
+    \end{equation}
+
+    By the fundamental theorem of calculus, $f$ is continuously differentiable and solve \ref{Stein representation}. Since $\varphi (G)-\E \varphi(G)$ has expectation zero, we can write \ref{Stein transform} as 
+    \begin{equation}
+        f(x):= -e^{x^2/2} \int^\infty_{x}e^{-y^2/2}(\varphi(y)-\E \varphi(G))\rmd y
+    \end{equation}
+
+    By completing the square\mn{Notice that we have two square term $x^2/2,y^2/2$ here so this is a good thing to try.}, we see that $e^{-y^2} \leq e^{-x^2/2}e^{-x(y-x)}$. 
+
+    We conclude the bound 
+    \begin{align*}
+        f(x) & \leq \int^x_{-\infty} e^{-x(y-x)} (\varphi(y)-\E \varphi(G))\rmd y \\
+             & \leq \int^x_{-\infty} e^{-xy}e^{x^2} O_\varphi(1)\rmd y \\
+             & = \frac{e^{x^2}}{x}\int_{-\infty}^{x^2} e^{-s}O_\varphi(1)\rmd s \\
+             & = O_\varphi (\frac{1}{x})
+    \end{align*}
+
+    This bound is valid when $|x|> 1$. When $|x|\leq 1$, divide the integral into two parts and using the boundedness of $\varphi$ and $e^{-y^2/2}$ to conclude $f(x) =O_\varphi(1)$. Thus for all $x$ we have $f(x)=O_\varphi(\frac{1}{1+|x|})$. Which already bring us half way to success.
+
+    Plug it back into \ref{Stein representation}, gives the boundedness of $f'$.
 \end{proof} 
+
+The argument is quantitative and can be used to give Berry-Esseen type results. We can reduce the number of derivatives of $\varphi$ need to be controlled.
+
+\begin{theorem}
+    [Berry-Esseen theorem, less weak form.]
+    Let $X$ have mean zero, unit variance, and finite third moment, and let $\varphi$ be smooth, bounded in magnitude by 1, and Lipschitz. Let $Z_n:+(X_1+\dots+X_n)/\sqrt{n}$, where $X_1,\dots,X_n$ are iid copies of $X$. Then we have 
+    \begin{equation}
+        \E \varphi(Z_n) =\E \varphi(G) + O(\frac{1}{\sqrt{n}}(\E |X|^3)(1+\sup_{x\in \R} |\varphi'(x)|))
+    \end{equation}
+    where $G \equiv N(0,1)_{\R}$.
+\end{theorem}
+
+\begin{proof}
+    Set $A:= 1+\sup_{x\in \R}|\varphi'(x)|.$
+
+    Let $f$ be the Stein transform of $\varphi$, 
+    \begin{equation*}
+        f(x) := e^{x^2/2} \int^x_{-\infty}e^{-y^2/2}(\varphi(y)-\E \varphi(G))\rmd y
+    \end{equation*}
+
+    then we have 
+    \begin{equation*}
+        \varphi(x)-\E \varphi(G) = f'(x)-xf(x)
+    \end{equation*}
+
+    We expand $Z_nf(Z_n)=\frac{1}{\sqrt{n}}\sum_{i=1}^nX_i f(Z_n)$. For each $i$, we then split $Z_n= Z_{n;i}+\frac{1}{\sqrt{n}}X_i$, where $Z_{n;i}:= (X_1+\cdots+X_{i-1}+X_{i+1}+\cdots+X_n)/\sqrt{n}.$
+    By the fundamental theorem of calculus, we have \mn{I don't understand where this $t$ comes from.}
+    \begin{equation*}
+        \E X_i f(Z_n) =\E X_i f(Z_{n;i})+\frac{1}{\sqrt{n}} X_i^2 f' (Z_{n;i}+\frac{t}{\sqrt{n}}X_i)
+    \end{equation*}
+    where $t$ is uniformly distributed in $[0,1]$ and independent of all the $X_i$.
+
+    Since $X_i$ and $Z_{n;i}$ are independent and meanzero, the first term on the rhs vanishes. Thus \mn{It seems that here he used some stochastic calculus technique, I don't understand why could one put a uniformly random $t$ here and have the following claim.}
+    \begin{equation}
+        \E \varphi(Z_n)-\E \varphi(G) =\frac{1}{n}\sum_{i=1}^n \E f'(Z_n) - X_i^2 f'(Z_{n;i}+\frac{t}{\sqrt{n}}X_i).
+    \end{equation}
+    Another application of independence gives 
+    \begin{equation*}
+        \E f'(Z_{n;i})=\E X_i^2f'(Z_{n;i})
+    \end{equation*}
+    so we may write
+    \begin{equation*}
+        \E \varphi(Z_n)-\E \varphi(G)  = \frac{1}{n} \sum_{i=1}^n \E (f'(Z_n)-f'(Z_{n;i})) - X_i^2(f'(Z_{n;i}+\frac{t}{\sqrt{n}}X_i)-f'(Z_{n;i})).
+    \end{equation*}
+    Since we have $f(x) = O(1/1+|x|)$ and $f'(x)=O(A/1+|x|)$. By the product rule, this implies that $xf(x)$ has a Lipschitz constat of $O(A)$. 
+    Applying $\varphi(x)-\E \varphi(G) = f'(x)-xf(x)$ and the definition of $A$, we conclude that $f'$ has a Lipschitz constant of $O(A)$. Thus we can bound the previous expression as 
+    \begin{equation*}
+        \frac{1}{n}\sum_{i=1}^n \E \frac{1}{\sqrt{n}}O(A|X_i|+A|X_i|^3)
+    \end{equation*}
+    Then apply Holder inequality the claim follows.
+\end{proof}
+
+This restores the exponent in factor on \ref{Weak to general berry esseen} from $1/4$ to $1/2$. 
+
+We can push this argument even further to when the $X_i$ is not only bounded in third moment, but actually bounded.
+
+\begin{theorem}
+    [Berry-Esseen theorem, bounded case]
+    Let $X$ have mean zero unit variance and be bounded by $O(1)$. Let $Z_n = (X_1+\cdots+X_n)/\sqrt{n}$. where $X_1,\dots,X_n$ are iid copies of $X$. Then we have 
+    \begin{equation}
+        \Pb\{Z_n<a\} = \Pb \{G<a\} +O(\frac{1}{\sqrt{n}})
+    \end{equation}
+    where $a=O(1)$, where $G\equiv N(0,1)_\R$
+\end{theorem}
+
+Use a limiting argument to get over the non-continuous problems.
+
+\section{Predicessor comparison}
+
+Suppose one had never heard of the normal distribution but one still suspected the existence of the central limit theorem. The overall idea here is to assume $Z_n$ and $Z_{n-1}$ have a very similar distribution. And the distribution it converges to is smooth and absolutely continuous.
+
+The predecessor $Z_{n-1}$ has a recursive formula 
+\begin{equation}
+    \label{recursive formula for predecessor comparison}
+    Z_n = \frac{\sqrt{n-1}}{\sqrt{n}}Z_{n-1}+\frac{1}{\sqrt{n}}X_n
+\end{equation}
+
+We normalise and truncate $X_n$ to have zero mean and unit variance.
+
+Since we assumed the distribution is similar. 
+For any test function 
+
+\begin{equation*}
+    \varphi(Z_n) \approx \E \varphi (Z_{n-1})\approx \int_\R  \varphi(x)\rho(x) \rmd x
+\end{equation*}
+
+Use the recursive formula to and assume the test function is smooth. We expand the test function to the third order:
+\begin{equation*}
+    \varphi(Z_n)=\varphi(\frac{\sqrt{n-1}}{\sqrt{n}} Z_{n-1}) +\frac{1}{\sqrt{n}}X_n\varphi'(\frac{\sqrt{n-1}}{\sqrt{n}}Z_{n-1})+\frac{1}{2n}X_n^2\varphi''(\frac{\sqrt{n-1}}{\sqrt{n}}Z_{n-1})+O(\frac{1}{n^{3/2}})
+\end{equation*}
+
+Taking expectations, using the independence of $X_n$ and $Z_{n-1}$ and the normalisation, we obtain
+
+\begin{equation*}
+    \E \varphi(Z_n)=\E \varphi(\frac{\sqrt{n-1}}{\sqrt{n}}Z_{n-1})+\frac{1}{2n}\varphi''(\frac{\sqrt{n-1}}{\sqrt{n}}Z_{n-1})+O(\frac{1}{n^{3/2}})
+\end{equation*}
+
+Up to errors of $O(\frac{1}{n^{3/2}})$,\mn{Why the approximation on the second order can have error of the third order.} one can approximate the second term ere by $\frac{1}{2n}\varphi''(Z_{n-1})$. We then insert this into
+\begin{equation*}
+    \varphi(Z_n) \approx \E \varphi (Z_{n-1})\approx \int_\R  \varphi(x)\rho(x) \rmd x
+\end{equation*}
+and obtain the heuristic equation:
+\begin{equation*}
+    \int_\R \varphi(x)\rho(x)\rmd x\approx \int_\R \varphi(\frac{\sqrt{n-1}}{\sqrt{n}}x)\rho(x)+\frac{1}{2n}\varphi''(x)\rho(x)\rmd x +O(\frac{1}{n^{3/2}}).
+\end{equation*}
+
+A change of variable for the first term on the rhs and integrating by parts for the second term, we have 
+
+\begin{equation*}
+    \int_\R \varphi(x) \rho(x) \rmd x\approx \int_\R \varphi(x)\frac{\sqrt{n}}{\sqrt{n-1}}\rho(\frac{\sqrt{n}}{\sqrt{n-1}}x)+\frac{1}{2n}\varphi(x)\rho''(x)\rmd x +O(\frac{1}{n^{3/2}}).
+\end{equation*}
+
+Since the choice of $\varphi$ is arbitrary test function, thie suggests the heuristic equation 
+\begin{equation*}
+    \rho(x)\approx \frac{\sqrt{n}}{\sqrt{n-1}}\rho(\frac{\sqrt{n}}{\sqrt{n-1}}x)+\frac{1}{2n}\rho''(x)+O(\frac{1}{n^{3/2}})
+\end{equation*}
+
+Taylor expansion gives 
+\begin{equation*}
+    \frac{\sqrt{n}}{\sqrt{n-1}} \rho(\frac{\sqrt{n}}{\sqrt{n-1}}x)=\rho(x)+\frac{1}{2n}\rho(x)+\frac{1}{2n}x\rho'(x)+O(\frac{1}{n^{3/2}}),
+\end{equation*}
+
+which leads us to the heuristic ODE\mn{This is like magic. How can someone first came up with this???}
+\begin{equation*}
+    L\rho(x)=0
+\end{equation*}
+
+where $L$ is the Ornstein-Uhlenbeck operator
+
+\begin{equation*}
+    L\rho(x) := \rho (x) + x\rho'(x)+\rho''(x).
+\end{equation*}
+
+Observe that $L\rho$ is the total derivative of $x\rho(x)+\rho''(x)$. Integrating from infinity, we get
+\begin{equation*}
+    x\rho(x)+\rho'(x)=0
+\end{equation*}
+
+Which bring us back to the desity function of Gaussian.
+
+If we view $\log n$ as a time parameter, and view $\varphi$ as depending on time, the above comptations heuristically lead us eventually to the Fokker-Planck equation
+\begin{equation*}
+    \partial_t \rho(t,x) = L\rho
+\end{equation*}
+
+for the Ornstein-Uhlenbeck process, which is a linear parabolic\mn{A type of PDE.} equation that is fortunate enough that it can be solved exactly. Using the spectral theory of the Ornstein-Uhlenbeck operator $L$, one can show that solutions to this equation starting from an arbitrary probability distribution, are attracted to the Gaussian desity function $\frac{1}{\sqrt{2\pi}}e^{-x^2/2}$, which is the steady state for this equation. The stable nature of this attraction can eventually by used to make the above heuristic analysis rigorous.
+
+\begin{remark}
+    This argument highlight two ideas which we will see again in later sections when studying random matrices. First, that it is profitable to study the distribution of some random object $Z_n$ by comparing it with its predecessor $Z_{n-1}$, which one presumes to have almost the same distribution. Second, we see that it may potentially be helpful to approximate a discrete process with a continuous evolution which can then be controlled using PDE methods.\mn{I really don't know anything about PDE, not even a undergraduate class. XD}
+\end{remark}
+
+
